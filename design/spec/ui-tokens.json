@@ -1,0 +1,74 @@
+{
+  "canvas": {
+    "width": 1440,
+    "height": 900,
+    "unit": "logical design coordinate"
+  },
+  "colors": {
+    "navy": "#002C5F",
+    "blue": "#377EAC",
+    "sky": "#93BEDA",
+    "ice": "#DCECF5",
+    "white": "#FFFFFF",
+    "pearl": "#F5F8FB",
+    "gray": "#D6E0E8",
+    "muted": "#566E83",
+    "ink": "#19364D"
+  },
+  "font": "Noto Sans KR",
+  "icons": {
+    "width": 24,
+    "height": 24,
+    "strokeWidth": 1.7,
+    "stroke": "currentColor",
+    "fill": "none",
+    "cap": "round",
+    "join": "round"
+  },
+  "back": {
+    "x": 164,
+    "y": 114,
+    "width": 64,
+    "height": 64,
+    "iconSize": 24,
+    "titleX": 248,
+    "sticky": true
+  },
+  "sheetClose": {
+    "x": 1328,
+    "y": 48,
+    "width": 64,
+    "height": 64,
+    "iconSize": 24
+  },
+  "touch": {
+    "minimumDp": 56,
+    "primaryHeightDp": 64
+  },
+  "badge": {
+    "width": 150,
+    "height": 44,
+    "radius": 22,
+    "icon": 24,
+    "font": 18,
+    "interactive": false
+  },
+  "scoreBars": {
+    "max": "max(10, ceil(max(beforeAndAfterScores)/10)*10)",
+    "showIntegerPoints": true,
+    "probability": false
+  },
+  "motion": {
+    "transitionMs": 200,
+    "toastMs": 3000,
+    "restricted": "stop_and_hide",
+    "unknown": "stop_and_hide",
+    "reduceMotion": "instant"
+  },
+  "responsive": {
+    "wide": "two_columns",
+    "narrow": "stack_panels_scroll_body_keep_back_and_cta",
+    "sheetNarrow": "full_height",
+    "minimumTouchMustNotScaleDown": true
+  }
+}

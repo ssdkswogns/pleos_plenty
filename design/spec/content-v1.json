@@ -1,0 +1,155 @@
+{
+  "version": "plenty-mvp-content-1",
+  "decisionDate": "2026-10-28",
+  "status": "design_decision_for_implementation",
+  "runtimeRulesVersion": 1,
+  "traits": [
+    {
+      "id": "waterside",
+      "label": "물가",
+      "namePrefix": "물가의",
+      "boostMaterialId": "moon-dew",
+      "tiePriority": 0,
+      "icon": "assets/icons/trait-waterside.svg"
+    },
+    {
+      "id": "highland",
+      "label": "산자락",
+      "namePrefix": "산자락의",
+      "boostMaterialId": "wind-stone",
+      "tiePriority": 1,
+      "icon": "assets/icons/trait-highland.svg"
+    },
+    {
+      "id": "city",
+      "label": "도시",
+      "namePrefix": "도시의",
+      "boostMaterialId": "cloud-light",
+      "tiePriority": 2,
+      "icon": "assets/icons/trait-city.svg"
+    }
+  ],
+  "materials": [
+    {
+      "id": "moon-dew",
+      "label": "달빛이슬",
+      "traitId": "waterside",
+      "pointsPerItem": 5
+    },
+    {
+      "id": "wind-stone",
+      "label": "바람돌",
+      "traitId": "highland",
+      "pointsPerItem": 5
+    },
+    {
+      "id": "cloud-light",
+      "label": "구름빛",
+      "traitId": "city",
+      "pointsPerItem": 5
+    }
+  ],
+  "regions": [
+    {
+      "id": "gangneung",
+      "label": "강릉",
+      "administrativeAreaLabel": "강릉시",
+      "traitId": "waterside",
+      "materialId": "moon-dew"
+    },
+    {
+      "id": "busan",
+      "label": "부산",
+      "administrativeAreaLabel": "부산광역시",
+      "traitId": "waterside",
+      "materialId": "moon-dew"
+    },
+    {
+      "id": "pyeongchang",
+      "label": "평창",
+      "administrativeAreaLabel": "평창군",
+      "traitId": "highland",
+      "materialId": "wind-stone"
+    },
+    {
+      "id": "seoul",
+      "label": "서울",
+      "administrativeAreaLabel": "서울특별시",
+      "traitId": "city",
+      "materialId": "cloud-light"
+    },
+    {
+      "id": "daejeon",
+      "label": "대전",
+      "administrativeAreaLabel": "대전광역시",
+      "traitId": "city",
+      "materialId": "cloud-light"
+    }
+  ],
+  "regionMatching": {
+    "method": "verified_administrative_area",
+    "geometryIncluded": false,
+    "outsideSupportedRegions": "null_region",
+    "unknownStaleOrAmbiguous": "null_region",
+    "nearestRegionFallback": false
+  },
+  "species": [
+    {
+      "id": "moonbell",
+      "label": "달빛종"
+    },
+    {
+      "id": "cloud-fern",
+      "label": "구름고사리"
+    },
+    {
+      "id": "tide-lotus",
+      "label": "물결연꽃"
+    }
+  ],
+  "collection": {
+    "discoveryTrigger": "first_successful_planting",
+    "bagOnlyUnlocks": false,
+    "prefixCollectionEnabled": false,
+    "showAcquisitionRegion": false,
+    "showLevel": false,
+    "representativeOrder": [
+      "stage_desc",
+      "xp_desc",
+      "plantId_asc"
+    ]
+  },
+  "naming": {
+    "SEED": "{species} 말랑",
+    "SPROUT": "{prefix? }{species} 새싹",
+    "MATURE": "{prefix? }{species}",
+    "allZeroPointsPrefix": null
+  },
+  "growth": {
+    "sproutXp": 20,
+    "matureXp": 100,
+    "xpPerKm": 1,
+    "dailyXpCapPerPlant": 50,
+    "maxCompanions": 3,
+    "plantingMaterialCost": 0
+  },
+  "previewExample": {
+    "stage": "SPROUT",
+    "xp": 37,
+    "currentName": "물가의 달빛종 새싹",
+    "pointsBefore": {
+      "waterside": 12,
+      "highland": 9,
+      "city": 1
+    },
+    "material": "wind-stone",
+    "count": 1,
+    "pointsAfter": {
+      "waterside": 12,
+      "highland": 14,
+      "city": 1
+    },
+    "nextStageName": "산자락의 달빛종",
+    "xpAfter": 37
+  }
+}

@@ -1,0 +1,162 @@
+[
+  {
+    "id": "00-trait-system",
+    "title": "지역 특성 아이콘과 배지",
+    "phase": "MVP",
+    "width": 1440,
+    "height": 900,
+    "svg": "screens/00-trait-system.svg",
+    "png": "screens/00-trait-system.png",
+    "notes": ""
+  },
+  {
+    "id": "10-plant-detail",
+    "title": "식물 상세 · 새싹",
+    "phase": "MVP",
+    "width": 1440,
+    "height": 900,
+    "svg": "screens/10-plant-detail.svg",
+    "png": "screens/10-plant-detail.png",
+    "notes": ""
+  },
+  {
+    "id": "10b-plant-mature",
+    "title": "식물 상세 · 성체",
+    "phase": "MVP",
+    "width": 1440,
+    "height": 900,
+    "svg": "screens/10b-plant-mature.svg",
+    "png": "screens/10b-plant-mature.png",
+    "notes": ""
+  },
+  {
+    "id": "11-plant-confirm",
+    "title": "말랑 심기 확인",
+    "phase": "MVP",
+    "width": 1440,
+    "height": 900,
+    "svg": "screens/11-plant-confirm.svg",
+    "png": "screens/11-plant-confirm.png",
+    "notes": ""
+  },
+  {
+    "id": "11b-plant-no-slot",
+    "title": "말랑 심기 · 빈 화분 없음",
+    "phase": "MVP",
+    "width": 1440,
+    "height": 900,
+    "svg": "screens/11b-plant-no-slot.svg",
+    "png": "screens/11b-plant-no-slot.png",
+    "notes": ""
+  },
+  {
+    "id": "12-trait-tuning",
+    "title": "특성 가꾸기 · 점수와 예상 이름",
+    "phase": "MVP",
+    "width": 1440,
+    "height": 900,
+    "svg": "screens/12-trait-tuning.svg",
+    "png": "screens/12-trait-tuning.png",
+    "notes": ""
+  },
+  {
+    "id": "14a-material-sheet",
+    "title": "재료 설명 · 오른쪽 시트",
+    "phase": "MVP",
+    "width": 1440,
+    "height": 900,
+    "svg": "screens/14a-material-sheet.svg",
+    "png": "screens/14a-material-sheet.png",
+    "notes": ""
+  },
+  {
+    "id": "15-collection",
+    "title": "도감 · 단계와 XP",
+    "phase": "MVP",
+    "width": 1440,
+    "height": 900,
+    "svg": "screens/15-collection.svg",
+    "png": "screens/15-collection.png",
+    "notes": ""
+  },
+  {
+    "id": "15a-species-detail",
+    "title": "도감 종 상세 · 읽기 전용",
+    "phase": "MVP",
+    "width": 1440,
+    "height": 900,
+    "svg": "screens/15a-species-detail.svg",
+    "png": "screens/15a-species-detail.png",
+    "notes": ""
+  },
+  {
+    "id": "05-companions",
+    "title": "동반자 선택 · 단계와 XP",
+    "phase": "MVP",
+    "width": 1440,
+    "height": 900,
+    "svg": "screens/05-companions.svg",
+    "png": "screens/05-companions.png",
+    "notes": ""
+  },
+  {
+    "id": "06-journey-ready",
+    "title": "출발 대기 · 자동 출발",
+    "phase": "MVP",
+    "width": 1440,
+    "height": 900,
+    "svg": "screens/06-journey-ready.svg",
+    "png": "screens/06-journey-ready.png",
+    "notes": ""
+  },
+  {
+    "id": "08-journey-result",
+    "title": "여정 결과 · 저장된 보상 확인",
+    "phase": "MVP",
+    "width": 1440,
+    "height": 900,
+    "svg": "screens/08-journey-result.svg",
+    "png": "screens/08-journey-result.png",
+    "notes": ""
+  },
+  {
+    "id": "09-seed-discovery",
+    "title": "말랑 발견 · 이미 지급된 아이템",
+    "phase": "MVP",
+    "width": 1440,
+    "height": 900,
+    "svg": "screens/09-seed-discovery.svg",
+    "png": "screens/09-seed-discovery.png",
+    "notes": ""
+  },
+  {
+    "id": "13-growth-complete",
+    "title": "자동 성장 결과 · 원화는 종류와 단계로만 변경",
+    "phase": "MVP",
+    "width": 1440,
+    "height": 900,
+    "svg": "screens/13-growth-complete.svg",
+    "png": "screens/13-growth-complete.png",
+    "notes": ""
+  },
+  {
+    "id": "S01-states",
+    "title": "특성·보상·제한 예외 상태",
+    "phase": "MVP",
+    "width": 1440,
+    "height": 900,
+    "svg": "screens/S01-states.svg",
+    "png": "screens/S01-states.png",
+    "notes": ""
+  },
+  {
+    "id": "S02-navigation",
+    "title": "내비게이션과 뒤로가기",
+    "phase": "MVP",
+    "width": 1440,
+    "height": 900,
+    "svg": "screens/S02-navigation.svg",
+    "png": "screens/S02-navigation.png",
+    "notes": ""
+  }
+]

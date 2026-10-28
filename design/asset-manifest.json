@@ -1,0 +1,380 @@
+{
+  "generatedOn": "2026-10-28",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 4473,
+      "sha256": "db92fa7463e888fa159dcf7d5f1ba3f2d9a8651cc1e577f2fbbc3e60d684b1b7"
+    },
+    {
+      "path": "assets/badges/city-default.png",
+      "bytes": 1432,
+      "sha256": "eae1493bb306803ea149711b5423ccb31117436683a98dcc0cfc98ff8dd04661"
+    },
+    {
+      "path": "assets/badges/city-default.svg",
+      "bytes": 1170,
+      "sha256": "4eae93c053c7da13cc85eadfc25c951f6a66b928b608252a84935b1b07b33038"
+    },
+    {
+      "path": "assets/badges/city-disabled.png",
+      "bytes": 1691,
+      "sha256": "7748dae1b1d6c5e51fa78d6bd6ae935e062f7c407cb16ea6853360d1cb0a4ce2"
+    },
+    {
+      "path": "assets/badges/city-disabled.svg",
+      "bytes": 1205,
+      "sha256": "41480112bbb0675b45151ec07871e5da9fa4403f700725568391eed740de2341"
+    },
+    {
+      "path": "assets/badges/city-prefix.png",
+      "bytes": 1703,
+      "sha256": "ac5835123a8bc37edc571eab78d65ac66fdd3a5b757d46b6cc56c74fe8ac85a6"
+    },
+    {
+      "path": "assets/badges/city-prefix.svg",
+      "bytes": 1172,
+      "sha256": "043f37fa36faaf30b1bf969098802bfaa25fe973968229cdebd4bf5628c68116"
+    },
+    {
+      "path": "assets/badges/city-selected.png",
+      "bytes": 1466,
+      "sha256": "bca47cc64897129f0b414dd3ab76f0abbd63c8b12b053188b54a873b32e3f007"
+    },
+    {
+      "path": "assets/badges/city-selected.svg",
+      "bytes": 1361,
+      "sha256": "c1d1239659d2abc0c2f597880e0606300f19bba03a14d6af5f3f5bed3cca6ba7"
+    },
+    {
+      "path": "assets/badges/highland-default.png",
+      "bytes": 2044,
+      "sha256": "148543b6707e55cef501541e1888935b8bfa0bdd330affdc74664568b8fdae61"
+    },
+    {
+      "path": "assets/badges/highland-default.svg",
+      "bytes": 1135,
+      "sha256": "308f0ab6a69dd5b69f94abf8243229b094422330dc79acf17556f6001b5d2c5b"
+    },
+    {
+      "path": "assets/badges/highland-disabled.png",
+      "bytes": 2270,
+      "sha256": "baefeabbdee70023e2329135ed1b03a6fb1af4f47102218cd137e40fb67315ea"
+    },
+    {
+      "path": "assets/badges/highland-disabled.svg",
+      "bytes": 1170,
+      "sha256": "3d5857797a9ac870eca1d23264498ac579c0c129f8c45bcfeb825557b6a0fb2a"
+    },
+    {
+      "path": "assets/badges/highland-prefix.png",
+      "bytes": 2293,
+      "sha256": "0948db6731b2b94eb56959d4424292a04677d337379dab78476afa2463066bfb"
+    },
+    {
+      "path": "assets/badges/highland-prefix.svg",
+      "bytes": 1137,
+      "sha256": "110edf6190a29b1324a60dee91d0f463e62ad20c21c3a8924f5fba049db13198"
+    },
+    {
+      "path": "assets/badges/highland-selected.png",
+      "bytes": 2065,
+      "sha256": "7f8a3f142df62584a2d1bda23847b6a968cb980457534ff711bc6c8bb321151e"
+    },
+    {
+      "path": "assets/badges/highland-selected.svg",
+      "bytes": 1326,
+      "sha256": "060c69b16e15ebdafb453bbe6ac4d7fa228218dab001f03601865fcda26dec4a"
+    },
+    {
+      "path": "assets/badges/waterside-default.png",
+      "bytes": 1640,
+      "sha256": "6c13e918469cbb4fb119a4bba19a864e08f33a14b1c6db6e9229dba511c7ce8e"
+    },
+    {
+      "path": "assets/badges/waterside-default.svg",
+      "bytes": 1200,
+      "sha256": "fb89c5b2a06c4d3ba43222a76247c3ce6d5dba8e20b33bf8bf14264723fd7228"
+    },
+    {
+      "path": "assets/badges/waterside-disabled.png",
+      "bytes": 1881,
+      "sha256": "ef97d7d3a67cf469ee9b59d2e328d955c4837245ba1ac278e3d7d4b8b966c8a8"
+    },
+    {
+      "path": "assets/badges/waterside-disabled.svg",
+      "bytes": 1235,
+      "sha256": "24eec91d183bcd315fc855d9a4e6649a1e03d0543f588471f81343879d0caba6"
+    },
+    {
+      "path": "assets/badges/waterside-prefix.png",
+      "bytes": 1892,
+      "sha256": "a4267915a13c43073d3e376e51cd78179882358d9eb6cebe069d5b7c308cadda"
+    },
+    {
+      "path": "assets/badges/waterside-prefix.svg",
+      "bytes": 1202,
+      "sha256": "367c918745c9ad77845a41f06f2f126a2309f4070976a0f0dda68ed28fe143ad"
+    },
+    {
+      "path": "assets/badges/waterside-selected.png",
+      "bytes": 1663,
+      "sha256": "0e7ef4c1700884039c871a97f57e13309cba167909dfb49483660187f6b710bf"
+    },
+    {
+      "path": "assets/badges/waterside-selected.svg",
+      "bytes": 1391,
+      "sha256": "bc7cb9d9f5f5f67248fa874c1f425ab1097484dfb83f38b951f409f86efb4bb4"
+    },
+    {
+      "path": "assets/icons/back.svg",
+      "bytes": 221,
+      "sha256": "38878d08611259ed3af7caab6ffdf9c9c6940b9422ac5a65d2a6e6b1498182df"
+    },
+    {
+      "path": "assets/icons/close.svg",
+      "bytes": 221,
+      "sha256": "9445ff071a6938e00bf134e5735597bbfc4471b74f44cb128a18935c8513c659"
+    },
+    {
+      "path": "assets/icons/minus.svg",
+      "bytes": 209,
+      "sha256": "246172078138edb6283faee4b270343fcfda87ab104a3482f59aae67537e653c"
+    },
+    {
+      "path": "assets/icons/plus.svg",
+      "bytes": 217,
+      "sha256": "31dec49e638d3c5d36b89ab263d2e26f0b48234f496f61d1b1b43f3799604467"
+    },
+    {
+      "path": "assets/icons/trait-city.svg",
+      "bytes": 282,
+      "sha256": "343e9ee0078d229b17e25bf64a0d3f31da43c72328a800e1ab86ca53b7e5efef"
+    },
+    {
+      "path": "assets/icons/trait-highland.svg",
+      "bytes": 241,
+      "sha256": "259cc614fa21d12a2d47d4bb095d25307509ff99cf5d8db50cc7d462a7ab8dc1"
+    },
+    {
+      "path": "assets/icons/trait-waterside.svg",
+      "bytes": 312,
+      "sha256": "6a04da9cd9a1fdcfd8b6707c9bc7e42177796d699b611c46144a00996407dc15"
+    },
+    {
+      "path": "assets/plant-atlas.png",
+      "bytes": 1285566,
+      "sha256": "79cd6e05f66d07adaf1e7489c4c433ecc77d81756845c51c450576dae233cbb0"
+    },
+    {
+      "path": "index.html",
+      "bytes": 5869,
+      "sha256": "b55d5009303ccc2332c878bf09262a2b6c466fe434ff6b1873b65ed60638fba2"
+    },
+    {
+      "path": "screen-manifest.json",
+      "bytes": 3974,
+      "sha256": "219a8d46fe259982856a2246bfd8946153a98fb3cc004135ed31a17bf5366128"
+    },
+    {
+      "path": "screens/00-trait-system.png",
+      "bytes": 86590,
+      "sha256": "fc81f9cd01727978bdb461f91dbe58e104e76deff057e531fe4171db80b95211"
+    },
+    {
+      "path": "screens/00-trait-system.svg",
+      "bytes": 12456,
+      "sha256": "aae1164f74ee5df5632ba29c513865bf374b78ee8ae528ae29f51d71a4dcf2a7"
+    },
+    {
+      "path": "screens/05-companions.png",
+      "bytes": 246233,
+      "sha256": "2e962e137317a0877b5151df70337ee928e8aeafadd1a09a49fa4cd99425f266"
+    },
+    {
+      "path": "screens/05-companions.svg",
+      "bytes": 8318,
+      "sha256": "ab66e1ab9ac8e0caea70228eb1e019e8d49c7fb7afd1ba641c48175bb4222088"
+    },
+    {
+      "path": "screens/06-journey-ready.png",
+      "bytes": 145407,
+      "sha256": "554a5762586b084256fea1a92e3283b110ad2c0932b59402ccd07dec8f6ac948"
+    },
+    {
+      "path": "screens/06-journey-ready.svg",
+      "bytes": 7919,
+      "sha256": "e53ea3f778b6823a65994525bbd4b3a1c3d0c4a0a10185fa5ca82b37acf08ece"
+    },
+    {
+      "path": "screens/08-journey-result.png",
+      "bytes": 182801,
+      "sha256": "d755e723f48856605d3ac063d789a6eca71cd4932d7793f65e04fcd8a8c7d581"
+    },
+    {
+      "path": "screens/08-journey-result.svg",
+      "bytes": 9266,
+      "sha256": "1e18c32d588abaa6be14db179070d028156c8181bedc77006f32ae692f94560c"
+    },
+    {
+      "path": "screens/09-seed-discovery.png",
+      "bytes": 211648,
+      "sha256": "6a30d6185d63f93e69907f25bf1cf112d969dfd579efe7940de33e5714e66b49"
+    },
+    {
+      "path": "screens/09-seed-discovery.svg",
+      "bytes": 6485,
+      "sha256": "014d133a9f747b7fad33e7e1d19eb816cf6fe11c638246d2ee1bbb7e2ee9446a"
+    },
+    {
+      "path": "screens/10-plant-detail.png",
+      "bytes": 205191,
+      "sha256": "740b3374c3935fbe77129b500e5e065178f33ec063475c279b979e5bb96aebb0"
+    },
+    {
+      "path": "screens/10-plant-detail.svg",
+      "bytes": 10015,
+      "sha256": "e0b3625464d6aa8408654214f5bf664a24255d88a51344b0442cababaf43cdc9"
+    },
+    {
+      "path": "screens/10b-plant-mature.png",
+      "bytes": 250282,
+      "sha256": "5b808f131c7cad7cfce9f76805df80796dbfcfc33ceca15e7ff602436a3ff032"
+    },
+    {
+      "path": "screens/10b-plant-mature.svg",
+      "bytes": 7686,
+      "sha256": "fc001c5218097ca0b58d016ff86db509ed86a2f0f70ef2c8fd87b8999023be0a"
+    },
+    {
+      "path": "screens/11-plant-confirm.png",
+      "bytes": 168519,
+      "sha256": "4ccdaffeac97d7a85b9b0f898e8b85c9e2e5b27244a41bea92eea3f0a4dd2e03"
+    },
+    {
+      "path": "screens/11-plant-confirm.svg",
+      "bytes": 11092,
+      "sha256": "22e567fc2cf2572709bda089a6e313b078caccc654c422fb348e63ca029ff275"
+    },
+    {
+      "path": "screens/11b-plant-no-slot.png",
+      "bytes": 168352,
+      "sha256": "980cbe6e7c2c0be624168647f22340799c78eff8f0cae79f1cae08e530d89dce"
+    },
+    {
+      "path": "screens/11b-plant-no-slot.svg",
+      "bytes": 11350,
+      "sha256": "7e09521a907621c2130a77f8394df83c1078b06fdce394b1d388aaafc313b565"
+    },
+    {
+      "path": "screens/12-trait-tuning.png",
+      "bytes": 106914,
+      "sha256": "ed3984e1e381c6dfc2d4fb3f9a68aadd4b379bf5a7fa07de4268dfdd9a4efd9b"
+    },
+    {
+      "path": "screens/12-trait-tuning.svg",
+      "bytes": 12598,
+      "sha256": "4f859f75d6c5c9b8970077d410a07ba391022806e3f00ae6f9c7d8afa297b21c"
+    },
+    {
+      "path": "screens/13-growth-complete.png",
+      "bytes": 201325,
+      "sha256": "ba700c50c9d1d4d54af4492ab2c7ff34e83516daedd18ecbfbcbc3a3ccd35423"
+    },
+    {
+      "path": "screens/13-growth-complete.svg",
+      "bytes": 6110,
+      "sha256": "47adabff29194c6d7a10a3ad51d760437865af7c3c7034b34ecdcb4d137f95a7"
+    },
+    {
+      "path": "screens/14a-material-sheet.png",
+      "bytes": 107770,
+      "sha256": "a7dffa5cefcbfac13f6dfc3ae9a8245caee9f34ab012305c7fd0d304e035769f"
+    },
+    {
+      "path": "screens/14a-material-sheet.svg",
+      "bytes": 9243,
+      "sha256": "be765f255f52edab2fc050020dc9cd003501695316f3f490219adb1c0f7156c4"
+    },
+    {
+      "path": "screens/15-collection.png",
+      "bytes": 244242,
+      "sha256": "d77b93d09d11fe5c58a65c43ef3955da143ebfaa4d7cf1b589e5e322dbbf4cc1"
+    },
+    {
+      "path": "screens/15-collection.svg",
+      "bytes": 7250,
+      "sha256": "c91c4b2f596046d3c8d0a4a74e1b56818820aab5c492b74ebbce523bbf3f9d8f"
+    },
+    {
+      "path": "screens/15a-species-detail.png",
+      "bytes": 274508,
+      "sha256": "14eee362d841d70328a1c0f1429ddc35d2fdef92c0af7f29241b4d85ea0cc5e1"
+    },
+    {
+      "path": "screens/15a-species-detail.svg",
+      "bytes": 8338,
+      "sha256": "61b8c4e388659a2a921e65f0156668e54e2e5bed74840f0da8672deb39413e07"
+    },
+    {
+      "path": "screens/S01-states.png",
+      "bytes": 127346,
+      "sha256": "0130d2152b7d365d3ae2b7c51bc58dd1f52ebfa3c17760b4e8fae66a6dd10de8"
+    },
+    {
+      "path": "screens/S01-states.svg",
+      "bytes": 9970,
+      "sha256": "d608e90702c1dffed5ba4aa8eb177869fe508432e92d3d6cfd45733f1a12cbfa"
+    },
+    {
+      "path": "screens/S02-navigation.png",
+      "bytes": 88915,
+      "sha256": "2bbe7a73f71beeaa115ffc7b73db54ec7f622e73629da3575d96d5b5f9cf2a1a"
+    },
+    {
+      "path": "screens/S02-navigation.svg",
+      "bytes": 7571,
+      "sha256": "7fbbc4e59b765178fd2c24100ad7b02812109781c3fd3ec6a7f55153ea2ae289"
+    },
+    {
+      "path": "spec/DECISIONS.md",
+      "bytes": 6702,
+      "sha256": "1b6ec5614dcd4538857d42db806eae2e5467996cd3dc1ccac82362af77204dff"
+    },
+    {
+      "path": "spec/INTERACTIONS.md",
+      "bytes": 12341,
+      "sha256": "62f4f21cfdf021feb734d9af6a50ea1edac2a2b4a44a79f5a9bfc0a2d3d43d57"
+    },
+    {
+      "path": "spec/QA.md",
+      "bytes": 1739,
+      "sha256": "6d676c110e264162a216b476a0e5f16ffdd5333affba0a3fd36a2b6b24277364"
+    },
+    {
+      "path": "spec/content-v1.json",
+      "bytes": 3522,
+      "sha256": "7efb854a2fd89b7e9280374b67080f639ec5f8eff18dc47cf0ac2247f42821ff"
+    },
+    {
+      "path": "spec/ui-tokens.json",
+      "bytes": 1441,
+      "sha256": "89fbe3002a7df38d76994c78c008b5c72356b2ed1ff0b8056c214edbafe039a1"
+    },
+    {
+      "path": "tools/README.md",
+      "bytes": 419,
+      "sha256": "99ee281b2451df7d6d05c023e9895ba7810dcfbc740dd6b28b23d9bb42ad64ee"
+    },
+    {
+      "path": "tools/build.py",
+      "bytes": 25392,
+      "sha256": "19a6197f3721b2f3e960d5f61fd37b667f2290df82ed728189a298716a946a1b"
+    },
+    {
+      "path": "tools/render.cjs",
+      "bytes": 996,
+      "sha256": "a4feb42b3e7f08353d5624d80f2c090a95eded18c1abb4e4468b7718d265eaba"
+    }
+  ]
+}
