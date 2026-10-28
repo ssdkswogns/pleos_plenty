@@ -12,6 +12,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import app.plenty.R
+import app.plenty.core.content.GrowthStage
+import app.plenty.core.content.SpeciesId
+import app.plenty.core.content.SpeciesIds
 
 /**
  * Plant artwork in plant_atlas.png. Rows are 440 / 410 / 404 px tall, not equal squares, so each
@@ -36,6 +39,22 @@ enum class PlantArt(
 
     val srcOffset: IntOffset get() = IntOffset(x, y)
     val srcSize: IntSize get() = IntSize(width, height)
+
+    companion object {
+        /** Art for a species at a stage; SEED is the 말랑 artwork. Regional traits never change the art. */
+        fun of(species: SpeciesId, stage: GrowthStage): PlantArt = when (species) {
+            SpeciesIds.MOONBELL -> pick(stage, MoonbellSeed, MoonbellSprout, MoonbellMature)
+            SpeciesIds.CLOUD_FERN -> pick(stage, CloudFernSeed, CloudFernSprout, CloudFernMature)
+            SpeciesIds.TIDE_LOTUS -> pick(stage, TideLotusSeed, TideLotusSprout, TideLotusMature)
+            else -> error("no art for $species")
+        }
+
+        private fun pick(stage: GrowthStage, seed: PlantArt, sprout: PlantArt, mature: PlantArt) = when (stage) {
+            GrowthStage.SEED -> seed
+            GrowthStage.SPROUT -> sprout
+            GrowthStage.MATURE -> mature
+        }
+    }
 }
 
 /** The decoded atlas, provided once at the app root so every plant shares one ~6 MB bitmap. */

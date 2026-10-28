@@ -2,6 +2,9 @@ package app.plenty.ui.garden
 
 import androidx.compose.runtime.Immutable
 import app.plenty.core.GardenLayout
+import app.plenty.core.content.MaterialIds
+import app.plenty.data.GardenSnapshot
+import app.plenty.data.ItemIds
 import app.plenty.ui.art.PlantArt
 
 /** Everything the garden home (03) draws. Screens read this; they never grant rewards themselves. */
@@ -31,16 +34,21 @@ sealed interface VehicleBadge {
 }
 
 /**
- * Layout-only data copied from the 03-home mockup until the repository exists (T05).
- * These are not game-balance values (HANDOFF §2).
+ * The app only shows game screens while parked (the platform covers them while driving), so the
+ * badge is "parked" until real charging data is connected (T08).
  */
-val MockGardenState = GardenUiState(
-    pots = listOf(
-        PotUi(plantId = 1, art = PlantArt.MoonbellMature),
-        PotUi(plantId = 2, art = PlantArt.CloudFernMature),
-        PotUi(plantId = 3, art = PlantArt.TideLotusMature),
-    ) + List(GardenLayout.SLOT_COUNT - 3) { null },
-    totalDistanceKm = 128.4,
-    materials = MaterialCounts(moonDew = 12, cloudLight = 8, windStone = 4),
-    vehicle = VehicleBadge.Charging(percent = 64),
-)
+fun GardenSnapshot.toGardenUiState(): GardenUiState {
+    val bySlot = plants.associateBy { it.slot }
+    return GardenUiState(
+        pots = (1..GardenLayout.SLOT_COUNT).map { slot ->
+            bySlot[slot]?.let { PotUi(it.state.id, PlantArt.of(it.state.species, it.state.stage)) }
+        },
+        totalDistanceKm = totalDistanceKm,
+        materials = MaterialCounts(
+            moonDew = count(ItemIds.material(MaterialIds.MOON_DEW)),
+            cloudLight = count(ItemIds.material(MaterialIds.CLOUD_LIGHT)),
+            windStone = count(ItemIds.material(MaterialIds.WIND_STONE)),
+        ),
+        vehicle = VehicleBadge.Parked,
+    )
+}

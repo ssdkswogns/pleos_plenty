@@ -14,6 +14,10 @@
 - **03 정원 홈 구현 (T06에서 앞당김, 목업 데이터)**: 배경+베일, 헤더 상태·재료 칩, 문구, 카트 원화에 슬롯 앵커 공식으로 식물 합성, 6칸 화분 패널, 여정 준비 버튼. 공통 컴포넌트 `GroveButton`(Primary/Secondary/Tonal·눌림·비활성), `StatusChip`, `PotSlot`, `PlantImage`(아틀라스 sourceRect), `TravelerCart`, `WorldBackdrop`. 화면 읽기 라벨 확인. 탭: 채운 화분→식물 상세(자리표시자), 빈 화분→가방, 여정 준비→동반자 선택(자리표시자).
   - 데이터는 `MockGardenState`(시안 값). "충전 중 · 64%"도 목업이며 실제 차량 값 아님. T05 저장소가 생기면 `GardenUiState`를 저장소에서 채운다.
   - 아직 없음: 세로/좁은 창 배치(P01), 밤 테마(24), 카트 상하 흔들림 모션, 화분 선택 상태 사용처.
+- **T05 완료 (저장과 정산)**: Room DB(`plants`·`inventory`·`journeys`·`journey_growth`·`reward_ledger`·`daily_xp`·`region_claims`, 스키마는 `app/schemas`). `GardenRepository`의 모든 지급은 한 트랜잭션에서 "원장 확인 → 계산(`:core` `SettlementPlanner`) → 상태·원장 저장". 원장 키 유일 제약으로 재정산·재시작·추첨 직후 종료에도 1회 지급. 시작 선물 말랑 1개(1회). Robolectric 저장소 테스트 10개(같은 여정 2회, DB 재오픈, 추첨 고정, 일일 상한·지역 1일 1회, 미확인/무효 거리, 심기 제약, 재료 보정).
+  - 홈·가방·도감이 저장소 상태를 표시 (`PlentyViewModel` → 화면별 UI 상태). 목업 데이터 제거.
+- **14 가방 / 15 도감 구현**: 가방은 전체·말랑·재료 탭, 말랑 카드 "심기"(첫 빈 화분에 심고 정원으로), 화분이 차면 비활성. 재료 카드는 연결 특성 설명. 도감은 종별 가장 많이 자란 개체(이름 앞말 포함)와 단계 진행 막대, 미발견은 흐린 성체 그림+자물쇠. "만남" 기준은 화분에 심은 적 있음.
+- **디버그 데모 명령** (debug 빌드만): `adb shell am broadcast --user 10 -n app.plenty/.debug.DebugCommandReceiver -a app.plenty.debug.SEED_DEMO` (초기화 후 말랑 3종 심기 + 지난 3일 MOCK 여정 3회 → 성체 2·새싹 1, 재료 1씩), `-a app.plenty.debug.RESET` (초기화).
 - **정원 홈 모션 (plenty-motion-kit)**: 망토를 분리한 `traveler_base` + `traveler_cape`(기존 `traveler_cart.png` 대체), `drawBitmapMesh`로 망토 펄럭임(1.5초)·고개(6초)·어깨 숨결(3초), 카트 상하·미세 회전, 식물 흔들림. 배경 드리프트(4% 여유, 24초)·구름·안개·반짝임·전경 식물, 베일을 옅게 조정. 인터랙션: 카트 위 식물 탭 → 통통 튐, 그 밖 탭 → 잠깐 강한 바람.
   - 모션 게이트: `DrivingRestrictionSource`(CarUxRestrictions) ALLOWED + 화면 STARTED 이상 + 시스템 애니메이션 켜짐. 아니면 정지 합성. **실측: 주행 중 5초 동안 Plenty 렌더 프레임 0, 주차 복귀 후 5초 312프레임.**
   - 성능(에뮬레이터): release 빌드 cold start 0.7–1.2초, 애니메이션 약 55fps·지연 7.8%. debug 빌드는 시작 5초대·지연 20%대(디버그 특성). 남은 지연은 대부분 GPU 명령 제출(에뮬레이터 그래픽 번역).
@@ -35,7 +39,8 @@
 
 ## 다음 티켓
 
-1. **T05** Room 저장과 정산 트랜잭션: 식물·가방·여정·지역 방문·보상 원장·일일 진행. 보상 키 유일 제약, 같은 여정 재정산·추첨 직후 재시작에도 1회 지급. 홈의 `MockGardenState`를 저장소 상태로 교체
+1. **05 동반자 선택 · 06 출발 준비 · 08 결과 · 09 발견**: 저장소의 `startJourney`/`settleJourney`를 화면 흐름에 연결
+2. **T08/T09**: 실제 Odometer로 출발·도착 스냅샷, 주행 제한 해제 시 자동 정산
 
 ## 작업 메모
 
@@ -44,6 +49,7 @@
 - 프로브: `adb shell am start --user 10 -n app.plenty/.debug.VehicleProbeActivity`, 로그 `adb logcat -s PlentyProbe`
 - 차량 상태: `bash tools/vehicle-sim.sh park|drive|speed 60|odometer 12345|soc 80|location 37.5665 126.9780|state`
 - 캡처: `adb exec-out screencap -p > screen.png` (cmd/bash). cold start 직후 캡처는 첫 프레임 전일 수 있음
-- 화면 텍스트 확인: Git Bash에서 `MSYS_NO_PATHCONV=1` 후 `adb shell uiautomator dump --display 0 /sdcard/ui.xml && adb shell cat /sdcard/ui.xml` (Compose 접근성 라벨이 보임)
+- 화면 텍스트 확인: Git Bash에서 `MSYS_NO_PATHCONV=1` 후 `adb shell uiautomator dump --display 0 /sdcard/ui.xml && adb shell cat /sdcard/ui.xml` (Compose 접근성 라벨이 보임). 정원 홈은 애니메이션 때문에 idle이 오지 않아 dump가 실패하므로 캡처로 확인
+- 저장소 테스트: `.\gradlew.bat :app:testDebugUnitTest` (Robolectric, 첫 실행 시 android-all jar 다운로드)
 - 원화는 아직 PNG(약 4.3MB). WebP 변환은 마무리 단계에서
 - 아이콘은 디자인 키트 SVG에서 생성한 파일이다. 손으로 고치지 말고 다시 생성한다

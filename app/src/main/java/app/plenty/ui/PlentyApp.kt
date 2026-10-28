@@ -43,7 +43,14 @@ import app.plenty.ui.components.GroveNavigationRail
 import app.plenty.ui.components.TopDestination
 import app.plenty.ui.garden.GardenScreen
 import app.plenty.ui.garden.GardenStatusChips
-import app.plenty.ui.garden.MockGardenState
+import app.plenty.ui.bag.BagScreen
+import app.plenty.ui.bag.toBagUiState
+import app.plenty.ui.collection.CollectionScreen
+import app.plenty.ui.collection.toCollectionUiState
+import app.plenty.ui.garden.toGardenUiState
+import androidx.compose.runtime.remember
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import app.plenty.ui.motion.rememberHomeMotion
 import app.plenty.ui.motion.rememberHomeMotionAllowed
 import app.plenty.ui.theme.PlentySpace
@@ -61,8 +68,9 @@ fun PlentyApp() {
     val currentRoute = backStackEntry?.destination?.route
     val selected = tabOf(currentRoute)
     val onGarden = currentRoute == TopDestination.Garden.route
-    // Layout mock until the repository lands (T05).
-    val gardenState = MockGardenState
+    val viewModel: PlentyViewModel = viewModel(factory = PlentyViewModel.Factory)
+    val snapshot by viewModel.garden.collectAsStateWithLifecycle()
+    val gardenState = remember(snapshot) { snapshot?.toGardenUiState() }
     val motionAllowed = rememberHomeMotionAllowed()
     val motion = rememberHomeMotion(active = onGarden && motionAllowed)
 
@@ -93,26 +101,40 @@ fun PlentyApp() {
                 )
                 Spacer(Modifier.width(40.dp))
                 Column(Modifier.weight(1f).fillMaxHeight()) {
-                    PlentyHeader(actions = { if (onGarden) GardenStatusChips(gardenState) })
+                    PlentyHeader(actions = { gardenState?.let { GardenStatusChips(it) } })
                     NavHost(
                         navController = navController,
                         startDestination = TopDestination.Garden.route,
                         modifier = Modifier.weight(1f),
                     ) {
                         composable(TopDestination.Garden.route) {
-                            GardenScreen(
-                                state = gardenState,
-                                motion = motion,
-                                onPotClick = { slot -> navController.navigate("plant/$slot") },
-                                onEmptyPotClick = { navController.navigateTopLevel(TopDestination.Bag.route) },
-                                onPrepareJourney = { navController.navigate(CompanionsRoute) },
-                            )
+                            gardenState?.let { state ->
+                                GardenScreen(
+                                    state = state,
+                                    motion = motion,
+                                    onPotClick = { slot -> navController.navigate("plant/$slot") },
+                                    onEmptyPotClick = { navController.navigateTopLevel(TopDestination.Bag.route) },
+                                    onPrepareJourney = { navController.navigate(CompanionsRoute) },
+                                )
+                            }
                         }
                         composable(TopDestination.Collection.route) {
-                            PlaceholderScreen(title = stringResource(R.string.nav_collection))
+                            snapshot?.let { garden ->
+                                CollectionScreen(
+                                    state = garden.toCollectionUiState(),
+                                    onOpenPlant = { slot -> navController.navigate("plant/$slot") },
+                                )
+                            }
                         }
                         composable(TopDestination.Bag.route) {
-                            PlaceholderScreen(title = stringResource(R.string.nav_bag))
+                            snapshot?.let { garden ->
+                                BagScreen(
+                                    state = garden.toBagUiState(),
+                                    onPlant = { species ->
+                                        viewModel.plant(species) { navController.navigateTopLevel(TopDestination.Garden.route) }
+                                    },
+                                )
+                            }
                         }
                         composable(TopDestination.Journey.route) {
                             PlaceholderScreen(title = stringResource(R.string.nav_journey))

@@ -39,6 +39,10 @@ android {
     buildFeatures {
         compose = true
     }
+    testOptions {
+        // Robolectric runs the Room repository tests on the JVM.
+        unitTests.isIncludeAndroidResources = true
+    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -52,6 +56,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
@@ -68,4 +73,12 @@ dependencies {
     // T02 probe only; moves to implementation when the real adapter lands (T08).
     debugImplementation(libs.pleos.vehicle)
     testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.kotlinx.coroutines.test)
+}
+
+ksp {
+    // Keep exported schemas in git so future migrations can be verified.
+    arg("room.schemaLocation", "$projectDir/schemas")
 }

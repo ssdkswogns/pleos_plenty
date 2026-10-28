@@ -31,6 +31,34 @@
     <string name="material_cloud_light">구름빛</string>
     <string name="material_wind_stone">바람돌</string>
     <string name="material_count_a11y">%1$s %2$d개</string>
+    <string name="material_boosts_trait">새싹·성체를 ‘%1$s’ 이름으로 이끌어요</string>
+    <string name="material_no_trait">아직 쓰임이 정해지지 않았어요</string>
+
+    <string name="stage_seed">말랑</string>
+    <string name="stage_sprout">새싹</string>
+    <string name="stage_mature">성체</string>
+    <string name="mallang_name">%1$s 말랑</string>
+    <string name="sprout_name">%1$s 새싹</string>
+
+    <!-- 14 여행 가방 -->
+    <string name="bag_title">여행 가방</string>
+    <string name="bag_tab_all">전체</string>
+    <string name="bag_tab_mallang">말랑</string>
+    <string name="bag_tab_materials">재료</string>
+    <string name="bag_count">× %1$d</string>
+    <string name="bag_plant">심기</string>
+    <string name="bag_pots_full">화분이 가득 찼어요</string>
+    <string name="bag_empty_title">아직 말랑이 없어요</string>
+    <string name="bag_empty_body">여정에서 새로운 지역을 방문하면 말랑을 만날 수 있어요.</string>
+
+    <!-- 15 식물도감 -->
+    <string name="collection_title">우리의 작은 식물도감</string>
+    <string name="collection_subtitle">만난 식물 %1$d / %2$d · 여정마다 새로운 이야기가 쌓여요.</string>
+    <string name="collection_progress">%1$s · %2$d / %3$d XP</string>
+    <string name="collection_progress_done">%1$s · %2$d XP</string>
+    <string name="collection_locked_title">아직 만나지 못했어요</string>
+    <string name="collection_locked_body">다음 여정의 만남을 기다려요</string>
+    <string name="collection_banner">말랑부터 꽃까지, 함께한 시간을 기록해요.</string>
 
     <!-- Placeholders until their tickets -->
     <string name="screen_plant_detail">식물 상세</string>

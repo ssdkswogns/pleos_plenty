@@ -9,6 +9,15 @@
         <activity
             android:name=".debug.VehicleProbeActivity"
             android:exported="true" />
+
+        <receiver
+            android:name=".debug.DebugCommandReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="app.plenty.debug.SEED_DEMO" />
+                <action android:name="app.plenty.debug.RESET" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
