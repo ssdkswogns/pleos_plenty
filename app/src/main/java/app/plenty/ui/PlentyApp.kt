@@ -36,12 +36,16 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import app.plenty.R
 import app.plenty.ui.art.LocalPlantAtlas
+import app.plenty.ui.art.LocalSceneArt
 import app.plenty.ui.art.WorldBackdrop
+import app.plenty.ui.art.rememberSceneArt
 import app.plenty.ui.components.GroveNavigationRail
 import app.plenty.ui.components.TopDestination
 import app.plenty.ui.garden.GardenScreen
 import app.plenty.ui.garden.GardenStatusChips
 import app.plenty.ui.garden.MockGardenState
+import app.plenty.ui.motion.rememberHomeMotion
+import app.plenty.ui.motion.rememberHomeMotionAllowed
 import app.plenty.ui.theme.PlentySpace
 import app.plenty.ui.theme.PlentyTheme
 
@@ -59,14 +63,19 @@ fun PlentyApp() {
     val onGarden = currentRoute == TopDestination.Garden.route
     // Layout mock until the repository lands (T05).
     val gardenState = MockGardenState
+    val motionAllowed = rememberHomeMotionAllowed()
+    val motion = rememberHomeMotion(active = onGarden && motionAllowed)
 
-    CompositionLocalProvider(LocalPlantAtlas provides ImageBitmap.imageResource(R.drawable.plant_atlas)) {
+    CompositionLocalProvider(
+        LocalPlantAtlas provides ImageBitmap.imageResource(R.drawable.plant_atlas),
+        LocalSceneArt provides rememberSceneArt(),
+    ) {
         Box(
             Modifier
                 .fillMaxSize()
                 .background(PlentyTheme.colors.background),
         ) {
-            if (onGarden) WorldBackdrop(Modifier.fillMaxSize())
+            if (onGarden) WorldBackdrop(motion, Modifier.fillMaxSize())
             Row(Modifier.fillMaxSize().padding(start = 24.dp, top = 24.dp, end = 48.dp, bottom = 28.dp)) {
                 GroveNavigationRail(
                     selected = selected,
@@ -93,6 +102,7 @@ fun PlentyApp() {
                         composable(TopDestination.Garden.route) {
                             GardenScreen(
                                 state = gardenState,
+                                motion = motion,
                                 onPotClick = { slot -> navController.navigate("plant/$slot") },
                                 onEmptyPotClick = { navController.navigateTopLevel(TopDestination.Bag.route) },
                                 onPrepareJourney = { navController.navigate(CompanionsRoute) },

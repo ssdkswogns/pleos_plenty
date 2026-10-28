@@ -34,3 +34,4 @@
 
 - 폰트: Noto Sans KR, SIL Open Font License 1.1 (`app/src/main/assets/licenses/NotoSansKR-OFL.txt`)
 - 캐릭터·카트·배경·식물 원화, 아이콘: 이 프로젝트를 위해 제작한 디자인 키트 v1.0 (원화는 이미지 생성 도구로 제작)
+- 망토 분리 캐릭터·구름·전경 원화와 모션 규격: 이 프로젝트를 위해 제작한 모션 키트 (원화는 이미지 생성 도구로 제작)

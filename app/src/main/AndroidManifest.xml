@@ -8,6 +8,11 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.Plenty">
+        <!-- CarUxRestrictionsManager (driving restriction); optional so the APK still installs elsewhere. -->
+        <uses-library
+            android:name="android.car"
+            android:required="false" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">

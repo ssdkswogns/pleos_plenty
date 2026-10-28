@@ -6,10 +6,6 @@
     <uses-permission android:name="pleos.car.permission.CAR_DRIVE" />
 
     <application>
-        <uses-library
-            android:name="android.car"
-            android:required="false" />
-
         <activity
             android:name=".debug.VehicleProbeActivity"
             android:exported="true" />

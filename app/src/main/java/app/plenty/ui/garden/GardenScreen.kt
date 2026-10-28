@@ -27,10 +27,11 @@ import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import app.plenty.R
 import app.plenty.core.GardenLayout
-import app.plenty.ui.art.TravelerCart
+import app.plenty.ui.art.TravelerScene
 import app.plenty.ui.components.GroveButton
 import app.plenty.ui.components.PotSlot
 import app.plenty.ui.components.StatusChip
+import app.plenty.ui.motion.HomeMotion
 import app.plenty.ui.theme.PlentyRadius
 import app.plenty.ui.theme.PlentyTheme
 import java.util.Locale
@@ -41,10 +42,11 @@ private val PanelShape = RoundedCornerShape(PlentyRadius.panel)
 private val CartOverlap = 34.dp
 private const val CART_ASPECT = 1586f / 992f
 
-/** 03 정원 홈: hero copy, the traveler cart with planted pots, and the 6-slot panel. */
+/** 03 정원 홈: hero copy, the animated traveler cart with planted pots, and the 6-slot panel. */
 @Composable
 fun GardenScreen(
     state: GardenUiState,
+    motion: HomeMotion,
     onPotClick: (slotNumber: Int) -> Unit,
     onEmptyPotClick: () -> Unit,
     onPrepareJourney: () -> Unit,
@@ -64,8 +66,9 @@ fun GardenScreen(
             )
             // Only the artwork scales with the window; text and buttons keep their size (HANDOFF §5).
             val cartWidth = min(maxWidth * 0.64f, (maxHeight + CartOverlap) * CART_ASPECT)
-            TravelerCart(
+            TravelerScene(
                 pots = state.pots.map { it?.art },
+                motion = motion,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(end = 17.dp)
