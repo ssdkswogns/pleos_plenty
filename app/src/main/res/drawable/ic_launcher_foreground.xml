@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generated from design kit app-icon-foreground.svg; regenerate instead of editing by hand. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+    <path
+        android:pathData="M150 261h188l-13 70H165Z"
+        android:fillColor="#FFF5F8FB"
+        android:strokeColor="#FF93BEDA"
+        android:strokeWidth="8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M173 280h139"
+        android:fillColor="#FF000000"
+        android:strokeColor="#FFD6E0E8"
+        android:strokeWidth="6"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M158,341a27,27 0 1,0 54,0a27,27 0 1,0 -54,0Z"
+        android:fillColor="#FF93BEDA" />
+    <path
+        android:pathData="M283,341a27,27 0 1,0 54,0a27,27 0 1,0 -54,0Z"
+        android:fillColor="#FF93BEDA" />
+    <path
+        android:pathData="M173,341a12,12 0 1,0 24,0a12,12 0 1,0 -24,0Z"
+        android:fillColor="#FF002C5F" />
+    <path
+        android:pathData="M298,341a12,12 0 1,0 24,0a12,12 0 1,0 -24,0Z"
+        android:fillColor="#FF002C5F" />
+    <path
+        android:pathData="M273 251c-2-28 8-51 30-71 24 11 43 43 42 71Z"
+        android:fillColor="#FF377EAC" />
+    <path
+        android:pathData="M288 212c-14-32 10-61 33-55 24 8 28 42 7 59"
+        android:fillColor="#FFDCECF5" />
+    <path
+        android:pathData="M296 192c8-19 25-20 34-4l-7 18-20-1Z"
+        android:fillColor="#FFF5F8FB" />
+    <path
+        android:pathData="M195 256v-30"
+        android:fillColor="#FF000000"
+        android:strokeColor="#FF93BEDA"
+        android:strokeWidth="9"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M196 234c-28 2-43-20-39-37 26-1 43 12 39 37Z"
+        android:fillColor="#FF93BEDA" />
+    <path
+        android:pathData="M198 228c-1-27 17-41 40-39 4 24-14 41-40 39Z"
+        android:fillColor="#FFDCECF5" />
+    <path
+        android:pathData="M177 249h42l-6 24h-31Z"
+        android:fillColor="#FFD6E0E8" />
+    <path
+        android:pathData="M236,255a12,12 0 1,0 24,0a12,12 0 1,0 -24,0Z"
+        android:fillColor="#FF93BEDA" />
+</vector>

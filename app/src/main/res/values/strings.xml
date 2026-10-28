@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">Plenty</string>
+
+    <string name="nav_garden">정원</string>
+    <string name="nav_collection">도감</string>
+    <string name="nav_bag">가방</string>
+    <string name="nav_journey">여정</string>
+    <string name="nav_settings">설정</string>
+
+    <!-- 03 정원 홈 -->
+    <string name="garden_eyebrow">당신의 여정을 닮은</string>
+    <string name="garden_title">함께 자라는 작은 숲</string>
+    <string name="garden_body">바람을 지나온 식물들이\n오늘도 당신을 기다리고 있어요.</string>
+    <string name="garden_total_distance">누적 여정 %1$s km</string>
+    <string name="garden_pots_title">나의 화분</string>
+    <string name="garden_pots_count">%1$d / %2$d</string>
+    <string name="garden_prepare_journey">여정 준비</string>
+    <string name="garden_prepare_journey_hint">동반 식물 %1$d개를 골라 함께 떠나요</string>
+    <string name="pot_filled_a11y">%1$d번 화분, %2$s</string>
+    <string name="pot_empty_a11y">%1$d번 화분, 비어 있음</string>
+
+    <string name="status_parked">주차 중</string>
+    <string name="status_charging">충전 중</string>
+    <string name="status_charging_percent">충전 중 · %1$d%%</string>
+
+    <string name="plant_moonbell">달빛종</string>
+    <string name="plant_cloud_fern">구름고사리</string>
+    <string name="plant_tide_lotus">물결연꽃</string>
+
+    <string name="material_moon_dew">달빛이슬</string>
+    <string name="material_cloud_light">구름빛</string>
+    <string name="material_wind_stone">바람돌</string>
+    <string name="material_count_a11y">%1$s %2$d개</string>
+
+    <!-- Placeholders until their tickets -->
+    <string name="screen_plant_detail">식물 상세</string>
+    <string name="screen_companions">여정 동반자 선택</string>
+    <string name="placeholder_body">준비 중인 화면이에요.</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Compose colors live in ui/theme/Color.kt; these are for the window and launcher only. -->
+    <color name="pearl">#FFF5F8FB</color>
+    <color name="ic_launcher_background">#FF002C5F</color>
+</resources>
