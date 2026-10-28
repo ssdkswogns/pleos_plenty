@@ -48,6 +48,7 @@
 - 설치·실행: `adb install -r app\build\outputs\apk\debug\app-debug.apk` → `adb shell am start --user 10 -n app.plenty/.MainActivity`
 - 프로브: `adb shell am start --user 10 -n app.plenty/.debug.VehicleProbeActivity`, 로그 `adb logcat -s PlentyProbe`
 - 차량 상태: `bash tools/vehicle-sim.sh park|drive|speed 60|odometer 12345|soc 80|location 37.5665 126.9780|state`
+- Virtual Console 열기: `tools\open-virtual-console.cmd` 더블클릭 (에뮬레이터 재시작 시 끊기는 8088 포트 연결을 다시 만들고 브라우저를 엶)
 - 캡처: `adb exec-out screencap -p > screen.png` (cmd/bash). cold start 직후 캡처는 첫 프레임 전일 수 있음
 - 화면 텍스트 확인: Git Bash에서 `MSYS_NO_PATHCONV=1` 후 `adb shell uiautomator dump --display 0 /sdcard/ui.xml && adb shell cat /sdcard/ui.xml` (Compose 접근성 라벨이 보임). 정원 홈은 애니메이션 때문에 idle이 오지 않아 dump가 실패하므로 캡처로 확인
 - 저장소 테스트: `.\gradlew.bat :app:testDebugUnitTest` (Robolectric, 첫 실행 시 android-all jar 다운로드)
