@@ -1,6 +1,5 @@
 package app.plenty.ui.bag
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,61 +36,57 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.plenty.R
-import app.plenty.core.GardenLayout
 import app.plenty.core.content.DefaultContent
 import app.plenty.core.content.GameContent
 import app.plenty.core.content.GrowthStage
 import app.plenty.core.content.MaterialId
-import app.plenty.core.content.MaterialIds
 import app.plenty.core.content.SpeciesId
 import app.plenty.data.GardenSnapshot
 import app.plenty.data.ItemIds
+import app.plenty.ui.ContentRes
 import app.plenty.ui.art.PlantArt
 import app.plenty.ui.art.PlantImage
 import app.plenty.ui.components.FilterPill
 import app.plenty.ui.components.PlentyCard
-import app.plenty.ui.speciesNameRes
+import app.plenty.ui.materialsInOrder
 import app.plenty.ui.theme.PlentyTheme
 
 data class BagUiState(
     val mallang: List<MallangItem>,
     val materials: List<MaterialItem>,
-    val potsFull: Boolean,
 )
 
 data class MallangItem(val species: SpeciesId, val count: Int)
 
 data class MaterialItem(
     val material: MaterialId,
-    @DrawableRes val icon: Int,
-    @StringRes val name: Int,
     val count: Int,
-    /** Name prefix of the trait this material boosts (GAME_RULES.md §3); null if it boosts none. */
-    val traitPrefix: String?,
+    /** Label of the trait this material tends ("산자락"); null if it boosts none. */
+    val traitLabel: String?,
 )
 
 /** Owned 말랑 only; materials always show, with 0 when empty (components spec: consistent 0). */
 fun GardenSnapshot.toBagUiState(content: GameContent = DefaultContent): BagUiState = BagUiState(
     mallang = content.species.map { MallangItem(it, count(ItemIds.mallang(it))) }.filter { it.count > 0 },
-    materials = listOf(
-        Triple(MaterialIds.MOON_DEW, R.drawable.ic_drop, R.string.material_moon_dew),
-        Triple(MaterialIds.CLOUD_LIGHT, R.drawable.ic_spark, R.string.material_cloud_light),
-        Triple(MaterialIds.WIND_STONE, R.drawable.ic_stone, R.string.material_wind_stone),
-    ).map { (id, icon, name) ->
-        MaterialItem(id, icon, name, count(ItemIds.material(id)), content.traitBoostedBy(id)?.namePrefix)
+    materials = content.materialsInOrder().map {
+        MaterialItem(it, count(ItemIds.material(it)), content.traitBoostedBy(it)?.label)
     },
-    potsFull = plants.size >= GardenLayout.SLOT_COUNT,
 )
 
-private enum class BagTab(@StringRes val label: Int) {
-    All(R.string.bag_tab_all),
-    Mallang(R.string.bag_tab_mallang),
-    Materials(R.string.bag_tab_materials),
+private enum class BagTab(@StringRes val label: Int, @StringRes val hint: Int) {
+    All(R.string.bag_tab_all, R.string.bag_hint_all),
+    Mallang(R.string.bag_tab_mallang, R.string.bag_hint_mallang),
+    Materials(R.string.bag_tab_materials, R.string.bag_hint_materials),
 }
 
-/** 14 여행 가방: 말랑 cards (plant into the first empty pot) and material cards. */
+/** 14 여행 가방: 말랑 cards open 11 (plant), material cards open the 14a sheet. */
 @Composable
-fun BagScreen(state: BagUiState, onPlant: (SpeciesId) -> Unit, modifier: Modifier = Modifier) {
+fun BagScreen(
+    state: BagUiState,
+    onPlant: (SpeciesId) -> Unit,
+    onOpenMaterial: (MaterialId) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     var tab by rememberSaveable { mutableStateOf(BagTab.All) }
     Column(
         modifier
@@ -100,7 +95,9 @@ fun BagScreen(state: BagUiState, onPlant: (SpeciesId) -> Unit, modifier: Modifie
             .padding(start = 4.dp, top = 36.dp, bottom = 24.dp),
     ) {
         Text(stringResource(R.string.bag_title), style = PlentyTheme.typography.title, color = PlentyTheme.colors.text)
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(12.dp))
+        Text(stringResource(tab.hint), style = PlentyTheme.typography.body.copy(fontSize = 22.sp), color = PlentyTheme.colors.textSecondary)
+        Spacer(Modifier.height(24.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             BagTab.entries.forEach { FilterPill(stringResource(it.label), selected = tab == it, onClick = { tab = it }) }
         }
@@ -109,12 +106,12 @@ fun BagScreen(state: BagUiState, onPlant: (SpeciesId) -> Unit, modifier: Modifie
             if (state.mallang.isEmpty()) {
                 EmptyMallangCard()
             } else {
-                CardGrid(state.mallang) { MallangCard(it, state.potsFull, onPlant) }
+                CardGrid(state.mallang) { MallangCard(it, onPlant) }
             }
         }
         if (tab == BagTab.All) Spacer(Modifier.height(28.dp))
         if (tab != BagTab.Mallang) {
-            CardGrid(state.materials) { MaterialCard(it) }
+            CardGrid(state.materials) { MaterialCard(it, onOpenMaterial) }
         }
     }
 }
@@ -133,16 +130,16 @@ private fun <T> CardGrid(items: List<T>, card: @Composable (T) -> Unit) {
 }
 
 @Composable
-private fun MallangCard(item: MallangItem, potsFull: Boolean, onPlant: (SpeciesId) -> Unit) {
+private fun MallangCard(item: MallangItem, onPlant: (SpeciesId) -> Unit) {
     val colors = PlentyTheme.colors
     val type = PlentyTheme.typography
-    val name = stringResource(R.string.mallang_name, stringResource(speciesNameRes(item.species)))
-    val action = stringResource(if (potsFull) R.string.bag_pots_full else R.string.bag_plant)
+    val name = stringResource(R.string.mallang_name, stringResource(ContentRes.speciesName(item.species)))
+    val action = stringResource(R.string.bag_plant)
     PlentyCard(
         Modifier
             .fillMaxWidth()
             .height(250.dp)
-            .clickable(enabled = !potsFull, role = Role.Button) { onPlant(item.species) }
+            .clickable(role = Role.Button) { onPlant(item.species) }
             .semantics { contentDescription = "$name ${item.count}개, $action" },
     ) {
         PlantImage(
@@ -172,27 +169,26 @@ private fun MallangCard(item: MallangItem, potsFull: Boolean, onPlant: (SpeciesI
             Text(
                 text = action,
                 style = type.caption.copy(fontSize = 20.sp, fontWeight = FontWeight.SemiBold),
-                color = if (potsFull) colors.textSecondary else colors.accent,
+                color = colors.accent,
                 modifier = Modifier.weight(1f),
             )
-            if (!potsFull) {
-                Icon(painterResource(R.drawable.ic_arrow), null, tint = colors.accent, modifier = Modifier.size(24.dp))
-            }
+            Icon(painterResource(R.drawable.ic_arrow), null, tint = colors.accent, modifier = Modifier.size(24.dp))
         }
     }
 }
 
 @Composable
-private fun MaterialCard(item: MaterialItem) {
+private fun MaterialCard(item: MaterialItem, onOpen: (MaterialId) -> Unit) {
     val colors = PlentyTheme.colors
     val type = PlentyTheme.typography
-    val name = stringResource(item.name)
-    val description = item.traitPrefix?.let { stringResource(R.string.material_boosts_trait, it) }
+    val name = stringResource(ContentRes.materialName(item.material))
+    val description = item.traitLabel?.let { stringResource(R.string.material_cultivates, it) }
         ?: stringResource(R.string.material_no_trait)
     PlentyCard(
         Modifier
             .fillMaxWidth()
             .height(250.dp)
+            .clickable(role = Role.Button) { onOpen(item.material) }
             .clearAndSetSemantics { contentDescription = "$name ${item.count}개. $description" },
     ) {
         Box(
@@ -202,7 +198,7 @@ private fun MaterialCard(item: MaterialItem) {
                 .background(colors.surfaceTonal, RoundedCornerShape(32.dp)),
             contentAlignment = Alignment.Center,
         ) {
-            Icon(painterResource(item.icon), null, tint = colors.accent, modifier = Modifier.size(54.dp))
+            Icon(painterResource(ContentRes.materialIcon(item.material)), null, tint = colors.accent, modifier = Modifier.size(54.dp))
         }
         Column(Modifier.padding(start = 180.dp, top = 44.dp)) {
             Text(name, style = type.body.copy(fontWeight = FontWeight.SemiBold), color = colors.text)

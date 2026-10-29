@@ -48,7 +48,7 @@ fun GardenScreen(
     state: GardenUiState,
     motion: HomeMotion,
     onPotClick: (slotNumber: Int) -> Unit,
-    onEmptyPotClick: () -> Unit,
+    onEmptyPotClick: (slotNumber: Int) -> Unit,
     onPrepareJourney: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -85,9 +85,9 @@ fun GardenScreen(
     }
 }
 
-/** Header capsules for the garden: vehicle status, then the three material counts. */
+/** Header capsules: vehicle status, then the material counts where the screen spends them. */
 @Composable
-fun RowScope.GardenStatusChips(state: GardenUiState) {
+fun RowScope.GardenStatusChips(state: GardenUiState, includeMaterials: Boolean = true) {
     when (val vehicle = state.vehicle) {
         is VehicleBadge.Charging -> StatusChip(
             icon = R.drawable.ic_bolt,
@@ -96,6 +96,7 @@ fun RowScope.GardenStatusChips(state: GardenUiState) {
         )
         VehicleBadge.Parked -> StatusChip(icon = R.drawable.ic_check, text = stringResource(R.string.status_parked))
     }
+    if (!includeMaterials) return
     MaterialChip(R.drawable.ic_drop, R.string.material_moon_dew, state.materials.moonDew)
     MaterialChip(R.drawable.ic_spark, R.string.material_cloud_light, state.materials.cloudLight)
     MaterialChip(R.drawable.ic_stone, R.string.material_wind_stone, state.materials.windStone)
@@ -146,7 +147,7 @@ private fun GardenHero(totalDistanceKm: Double?, modifier: Modifier = Modifier) 
 private fun PotsPanel(
     state: GardenUiState,
     onPotClick: (Int) -> Unit,
-    onEmptyPotClick: () -> Unit,
+    onEmptyPotClick: (slotNumber: Int) -> Unit,
     onPrepareJourney: () -> Unit,
 ) {
     val colors = PlentyTheme.colors
@@ -183,7 +184,7 @@ private fun PotsPanel(
                     PotSlot(
                         number = slotNumber,
                         plant = pot?.art,
-                        onClick = { if (pot != null) onPotClick(slotNumber) else onEmptyPotClick() },
+                        onClick = { if (pot != null) onPotClick(slotNumber) else onEmptyPotClick(slotNumber) },
                     )
                 }
             }

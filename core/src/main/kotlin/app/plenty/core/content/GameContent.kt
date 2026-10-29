@@ -10,8 +10,11 @@ import app.plenty.core.GardenLayout
 /** SEED is a 말랑 planted in a pot. 말랑 still in the bag are inventory items, not plants. */
 enum class GrowthStage { SEED, SPROUT, MATURE }
 
-/** A regional trait. It only changes the name prefix of sprouts and mature plants, never the art. */
-data class Trait(val id: TraitId, val namePrefix: String, val boostMaterial: MaterialId?)
+/**
+ * A regional mood category. It only changes the name prefix of sprouts and mature plants; it is
+ * not a stat, rarity or growth speed (design/spec/DECISIONS.md §1).
+ */
+data class Trait(val id: TraitId, val label: String, val namePrefix: String, val boostMaterial: MaterialId?)
 
 data class Region(val id: RegionId, val name: String, val trait: TraitId, val material: MaterialId)
 
@@ -65,16 +68,17 @@ object TraitIds {
 }
 
 /**
- * Rules v1. Traits, prefixes, material links and regions are TEMPORARY until the planner
- * defines them (GAME_RULES.md §6); replace this data, not the engine.
+ * Rules v1 with the confirmed MVP content `plenty-mvp-content-1` (design/spec/content-v1.json).
+ * Trait order is the tie priority: 물가 -> 산자락 -> 도시. Region IDs must stay stable so the
+ * per-region reward ledger keeps working.
  */
 val DefaultContent = GameContent(
     rulesVersion = 1,
     species = listOf(SpeciesIds.MOONBELL, SpeciesIds.CLOUD_FERN, SpeciesIds.TIDE_LOTUS),
     traits = listOf(
-        Trait(TraitIds.WATERSIDE, namePrefix = "물가의", boostMaterial = MaterialIds.MOON_DEW),
-        Trait(TraitIds.HIGHLAND, namePrefix = "산자락의", boostMaterial = MaterialIds.WIND_STONE),
-        Trait(TraitIds.CITY, namePrefix = "도시의", boostMaterial = MaterialIds.CLOUD_LIGHT),
+        Trait(TraitIds.WATERSIDE, label = "물가", namePrefix = "물가의", boostMaterial = MaterialIds.MOON_DEW),
+        Trait(TraitIds.HIGHLAND, label = "산자락", namePrefix = "산자락의", boostMaterial = MaterialIds.WIND_STONE),
+        Trait(TraitIds.CITY, label = "도시", namePrefix = "도시의", boostMaterial = MaterialIds.CLOUD_LIGHT),
     ),
     regions = listOf(
         Region(RegionId("gangneung"), "강릉", TraitIds.WATERSIDE, MaterialIds.MOON_DEW),

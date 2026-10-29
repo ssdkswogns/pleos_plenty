@@ -6,6 +6,8 @@
     <string name="nav_bag">가방</string>
     <string name="nav_journey">여정</string>
     <string name="nav_settings">설정</string>
+    <string name="back_to">뒤로, %1$s</string>
+    <string name="close">닫기</string>
 
     <!-- 03 정원 홈 -->
     <string name="garden_eyebrow">당신의 여정을 닮은</string>
@@ -23,45 +25,132 @@
     <string name="status_charging">충전 중</string>
     <string name="status_charging_percent">충전 중 · %1$d%%</string>
 
+    <!-- Content names (design/spec/content-v1.json) -->
     <string name="plant_moonbell">달빛종</string>
     <string name="plant_cloud_fern">구름고사리</string>
     <string name="plant_tide_lotus">물결연꽃</string>
-
     <string name="material_moon_dew">달빛이슬</string>
     <string name="material_cloud_light">구름빛</string>
     <string name="material_wind_stone">바람돌</string>
     <string name="material_count_a11y">%1$s %2$d개</string>
-    <string name="material_boosts_trait">새싹·성체를 ‘%1$s’ 이름으로 이끌어요</string>
-    <string name="material_no_trait">아직 쓰임이 정해지지 않았어요</string>
-
     <string name="stage_seed">말랑</string>
     <string name="stage_sprout">새싹</string>
     <string name="stage_mature">성체</string>
     <string name="mallang_name">%1$s 말랑</string>
     <string name="sprout_name">%1$s 새싹</string>
 
-    <!-- 14 여행 가방 -->
+    <!-- 15a species taglines / 14a material lines. Only moonbell and wind stone come from the
+         design; the other four are TEMPORARY until the planner confirms them. -->
+    <string name="tagline_moonbell">달빛처럼 조용히 피는 작은 종</string>
+    <string name="tagline_cloud_fern">구름처럼 말린 잎을 천천히 펴는 고사리</string>
+    <string name="tagline_tide_lotus">물결을 닮은 꽃잎을 겹겹이 피우는 연꽃</string>
+    <string name="flavor_wind_stone">산의 바람을 품은 작은 돌</string>
+    <string name="flavor_moon_dew">물가의 달빛을 머금은 이슬</string>
+    <string name="flavor_cloud_light">도시의 구름에 비친 작은 빛</string>
+
+    <!-- Trait points -->
+    <string name="points">%1$d점</string>
+    <string name="points_change">%1$d → %2$d점</string>
+    <string name="no_points_hint">아직 지역 특성 점수가 없어요.</string>
+
+    <!-- 10 / 10b 식물 상세 -->
+    <string name="screen_plant_detail">식물 상세</string>
+    <string name="detail_subtitle_growing">화분 %1$s · 현재 이름과 다음 이름은 다를 수 있어요.</string>
+    <string name="detail_subtitle_mature">화분 %1$s · 성체 이름이 확정됐어요.</string>
+    <string name="detail_stage_xp">%1$s · 누적 %2$d XP</string>
+    <string name="detail_until_next">%1$s까지 %2$d XP</string>
+    <string name="detail_xp_of">%1$d / %2$d XP</string>
+    <string name="detail_scores_title">이번 단계의 특성 점수</string>
+    <string name="detail_predicted_label">현재 점수로 예상하는 이름</string>
+    <string name="detail_tune">특성 가꾸기</string>
+    <string name="detail_companions">동반자 선택</string>
+    <string name="mature_badge">성장이 완료됐어요</string>
+    <string name="mature_title">여정이 이름이 되었어요</string>
+    <string name="mature_body">성체의 이름 앞말은 이제 바뀌지 않아요.\n함께 떠나면 경험치는 계속 쌓여요.</string>
+    <string name="mature_confirmed_label">확정된 이름</string>
+    <string name="mature_companions">동반자 선택으로</string>
+
+    <!-- 11 / 11b 말랑 심기 확인 -->
+    <string name="confirm_title">말랑을 심을까요?</string>
+    <string name="confirm_subtitle">말랑 1개를 빈 화분으로 옮겨요. 다른 재료는 필요하지 않아요.</string>
+    <string name="confirm_in_bag">가방에 %1$d개</string>
+    <string name="confirm_pots_title">심을 화분</string>
+    <string name="confirm_pots_subtitle">첫 빈 화분을 미리 골랐어요. 다른 빈 칸도 선택할 수 있어요.</string>
+    <string name="slot_used">사용 중</string>
+    <string name="slot_empty">빈 화분</string>
+    <string name="slot_selected">선택됨</string>
+    <string name="confirm_summary">%1$s %2$d → %3$d개 · 재료 사용 없음</string>
+    <string name="confirm_hint">심은 뒤 동반자로 선택하면 여정에서 자라요.</string>
+    <string name="confirm_no_slot">빈 화분이 없어요. 말랑은 가방에 그대로 있어요.</string>
+    <string name="confirm_no_slot_hint">새 화분을 사용할 수 있을 때 심어 주세요.</string>
+    <string name="confirm_no_mallang">이 말랑은 가방에 없어요</string>
+    <string name="confirm_changed">화분이나 가방 상태가 바뀌었어요. 다시 선택해 주세요.</string>
+    <string name="confirm_cta">%1$s 화분에 심기</string>
+    <string name="confirm_cta_none">심을 화분 없음</string>
+    <string name="confirm_cta_pick">심을 화분을 골라 주세요</string>
+    <string name="confirm_to_bag">가방으로</string>
+    <string name="confirm_to_garden">정원으로</string>
+    <string name="planted_toast">%1$s 말랑을 심었어요</string>
+    <string name="action_failed">저장하지 못했어요. 다시 시도해 주세요.</string>
+
+    <!-- 12 특성 가꾸기 -->
+    <string name="tune_title">특성 가꾸기</string>
+    <string name="tune_subtitle">%1$s · 재료는 이름 앞말에 영향을 주고, 경험치는 올리지 않아요.</string>
+    <string name="tune_pick">어떤 재료를 줄까요?</string>
+    <string name="tune_material_effect">%1$s +%2$d점 / 1개</string>
+    <string name="tune_owned">%1$d개</string>
+    <string name="tune_owned_zero">보유 %1$d개</string>
+    <string name="tune_quantity">사용할 수량</string>
+    <string name="tune_usage">%1$s %2$d개 중 %3$d개 사용</string>
+    <string name="tune_no_material">가진 재료가 없어요. 지원 지역을 방문하면 재료를 얻어요.</string>
+    <string name="tune_changes">사용 후 달라지는 점</string>
+    <string name="tune_predicted">다음 단계 예상 이름</string>
+    <string name="tune_note_sprout">이후 여정에 따라 달라져요. 성체가 될 때 확정돼요.</string>
+    <string name="tune_note_seed">이후 여정에 따라 달라져요. 새싹이 될 때 확정돼요.</string>
+    <string name="tune_same_name">아직 예상 이름은 같아요. %1$s 점수가 높아져요.</string>
+    <string name="tune_tie">같은 점수면 물가 → 산자락 → 도시 순서로 정해져요.</string>
+    <string name="tune_cta">%1$s %2$d개 주기</string>
+    <string name="tune_cta_none">줄 수 있는 재료가 없어요</string>
+    <string name="tune_done_toast">%1$s 특성 +%2$d점 · %3$s %4$d개 사용</string>
+    <string name="tune_became_mature">이미 성체로 자랐어요. 이름이 정해졌어요.</string>
+    <string name="decrease">수량 줄이기</string>
+    <string name="increase">수량 늘리기</string>
+
+    <!-- 14 여행 가방 / 14a 재료 설명 -->
     <string name="bag_title">여행 가방</string>
     <string name="bag_tab_all">전체</string>
     <string name="bag_tab_mallang">말랑</string>
     <string name="bag_tab_materials">재료</string>
+    <string name="bag_hint_all">말랑은 화분에 심고, 재료는 눌러서 쓰임을 확인해요.</string>
+    <string name="bag_hint_mallang">말랑을 누르면 빈 화분을 골라 심을 수 있어요.</string>
+    <string name="bag_hint_materials">재료를 누르면 용도와 연결 특성을 볼 수 있어요.</string>
     <string name="bag_count">× %1$d</string>
     <string name="bag_plant">심기</string>
-    <string name="bag_pots_full">화분이 가득 찼어요</string>
     <string name="bag_empty_title">아직 말랑이 없어요</string>
-    <string name="bag_empty_body">여정에서 새로운 지역을 방문하면 말랑을 만날 수 있어요.</string>
+    <string name="bag_empty_body">여정에서 지원 지역을 처음 방문하면 말랑을 만날 수 있어요.</string>
+    <string name="material_cultivates">%1$s 특성을 가꿔요</string>
+    <string name="material_no_trait">아직 쓰임이 정해지지 않았어요</string>
+    <string name="sheet_owned">보유 %1$d개</string>
+    <string name="sheet_body">씨앗이나 새싹에게 1개를 주면\n%1$s 특성이 %2$d점 높아져요.</string>
+    <string name="sheet_info">이름은 다음 성장 단계에서 정해져요.\n경험치와 모습은 바뀌지 않아요.</string>
+    <string name="sheet_confirm">확인</string>
 
-    <!-- 15 식물도감 -->
+    <!-- 15 식물도감 / 15a 종 상세 -->
     <string name="collection_title">우리의 작은 식물도감</string>
-    <string name="collection_subtitle">만난 식물 %1$d / %2$d · 여정마다 새로운 이야기가 쌓여요.</string>
+    <string name="collection_subtitle">만난 식물 %1$d / %2$d · 화분에 심으면 도감에 기록돼요.</string>
     <string name="collection_progress">%1$s · %2$d / %3$d XP</string>
-    <string name="collection_progress_done">%1$s · %2$d XP</string>
+    <string name="collection_progress_done">%1$s · 누적 %2$d XP</string>
     <string name="collection_locked_title">아직 만나지 못했어요</string>
-    <string name="collection_locked_body">다음 여정의 만남을 기다려요</string>
-    <string name="collection_banner">말랑부터 꽃까지, 함께한 시간을 기록해요.</string>
+    <string name="collection_locked_body">말랑을 심어 첫 만남을 기록해요</string>
+    <string name="collection_note">가장 많이 자란 식물을 기준으로 보여요. 이름 앞말은 종 상세에서 확인해요.</string>
+    <string name="species_subtitle">식물도감 / 종 상세 · 읽기 전용</string>
+    <string name="species_count">만난 종 · 정원에 %1$d개</string>
+    <string name="species_stages_title">함께 알아가는 세 가지 모습</string>
+    <string name="species_stage_locked">%1$s, 아직 자라지 않았어요</string>
+    <string name="species_best_label">정원에서 가장 많이 자란 식물</string>
+    <string name="species_readonly">이곳에서는 재료 사용이나 동반자 변경을 할 수 없어요.</string>
 
     <!-- Placeholders until their tickets -->
-    <string name="screen_plant_detail">식물 상세</string>
     <string name="screen_companions">여정 동반자 선택</string>
     <string name="placeholder_body">준비 중인 화면이에요.</string>
 </resources>
