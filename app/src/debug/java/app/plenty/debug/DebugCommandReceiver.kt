@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.room.withTransaction
 import app.plenty.PlentyApplication
 import app.plenty.core.content.RegionId
 import app.plenty.core.content.SpeciesIds
@@ -22,10 +23,15 @@ import java.time.Duration
  *
  *   adb shell am broadcast --user 10 -n app.plenty/.debug.DebugCommandReceiver -a app.plenty.debug.SEED_DEMO
  *   adb shell am broadcast --user 10 -n app.plenty/.debug.DebugCommandReceiver -a app.plenty.debug.RESET
+ *   adb shell am broadcast --user 10 -n app.plenty/.debug.DebugCommandReceiver -a app.plenty.debug.ARRIVAL_REGION --es region gangneung
  *
  * SEED_DEMO resets the garden, plants one 말랑 of each species and runs three MOCK journeys through
  * the real settlement path on the three previous days, so daily caps apply as in play and today's
- * cap is untouched. Journeys keep source = MOCK so they are never presented as vehicle data.
+ * cap is untouched. Journeys keep source = MOCK so they are never presented as vehicle data, and
+ * count as already seen so they do not open 08 on launch.
+ *
+ * ARRIVAL_REGION stands in for T10 until region matching exists: the next vehicle arrivals settle
+ * in that region (omit `--es region` to go back to "unknown"). It lasts until the process dies.
  */
 class DebugCommandReceiver : BroadcastReceiver() {
 
@@ -39,6 +45,10 @@ class DebugCommandReceiver : BroadcastReceiver() {
                     ACTION_SEED_DEMO -> {
                         reset(app)
                         seedDemo(app)
+                    }
+                    ACTION_ARRIVAL_REGION -> {
+                        app.container.arrivalRegion.override = intent.getStringExtra("region")?.let(::RegionId)
+                        Log.i(TAG, "arrival region override = ${app.container.arrivalRegion.override}")
                     }
                     else -> Log.w(TAG, "unknown action ${intent.action}")
                 }
@@ -56,7 +66,8 @@ class DebugCommandReceiver : BroadcastReceiver() {
         app.container.gardenRepository.ensureStarterGift()
     }
 
-    private suspend fun seedDemo(app: PlentyApplication) {
+    /** One transaction, so the UI never sees the mock results before they are marked seen. */
+    private suspend fun seedDemo(app: PlentyApplication) = app.container.database.withTransaction {
         val db = app.container.database
         val dao = db.gardenDao()
         val plants = listOf(SpeciesIds.MOONBELL, SpeciesIds.CLOUD_FERN, SpeciesIds.TIDE_LOTUS)
@@ -77,6 +88,7 @@ class DebugCommandReceiver : BroadcastReceiver() {
             val journey = repo.startJourney(companions, odometerKm, JourneySource.MOCK)
             odometerKm += 50.0
             Log.i(TAG, "mock journey $journey -> ${repo.settleJourney(journey, odometerKm, region)}")
+            repo.markResultSeen(journey)
         }
     }
 
@@ -84,5 +96,6 @@ class DebugCommandReceiver : BroadcastReceiver() {
         const val TAG = "PlentyDebug"
         const val ACTION_SEED_DEMO = "app.plenty.debug.SEED_DEMO"
         const val ACTION_RESET = "app.plenty.debug.RESET"
+        const val ACTION_ARRIVAL_REGION = "app.plenty.debug.ARRIVAL_REGION"
     }
 }

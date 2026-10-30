@@ -14,8 +14,13 @@ set -euo pipefail
 
 BASE="http://127.0.0.1:8088"
 
+# The console rejects writes with 503 unless a browser session has sent a heartbeat within ~3s.
+# Values written during the session persist after it lapses.
+heartbeat() { curl -s -o /dev/null -X POST "$BASE/browser/session?client=vehicle-sim"; }
+
 put() {
   local code
+  heartbeat
   code=$(curl -s -o /dev/null -w '%{http_code}' -X PUT "$BASE$1")
   if [ "$code" != "200" ]; then echo "FAIL PUT $1 -> HTTP $code" >&2; exit 1; fi
   echo "OK  PUT $1"

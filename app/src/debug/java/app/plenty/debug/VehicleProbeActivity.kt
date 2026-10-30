@@ -1,6 +1,10 @@
 package app.plenty.debug
 
 import android.car.Car
+import android.car.VehicleGear as CarGear
+import android.car.VehiclePropertyIds
+import android.car.hardware.CarPropertyValue
+import android.car.hardware.property.CarPropertyManager
 import android.car.drivingstate.CarUxRestrictions
 import android.car.drivingstate.CarUxRestrictionsManager
 import android.os.Bundle
@@ -71,6 +75,7 @@ class VehicleProbeActivity : ComponentActivity() {
     }
 
     override fun onDestroy() {
+        propertyManager?.unregisterCallback(gearCallback)
         uxManager?.unregisterListener()
         car?.disconnect()
         if (::vehicle.isInitialized) {
@@ -94,6 +99,12 @@ class VehicleProbeActivity : ComponentActivity() {
         log("lifecycle: onStart")
     }
 
+    private val gearCallback = object : CarPropertyManager.CarPropertyEventCallback {
+        override fun onChangeEvent(value: CarPropertyValue<*>) = log("GEAR_SELECTION event: ${value.value} status=${value.status}")
+        override fun onErrorEvent(propertyId: Int, areaId: Int) = log("GEAR_SELECTION error area=$areaId")
+    }
+    private var propertyManager: CarPropertyManager? = null
+
     private fun probeUxRestrictions() {
         runCatching {
             val connected = Car.createCar(this) ?: error("Car.createCar returned null")
@@ -103,6 +114,12 @@ class VehicleProbeActivity : ComponentActivity() {
             log("ux current: ${manager.currentCarUxRestrictions.describe()}")
             manager.registerListener(uxListener)
         }.onFailure { log("ux probe failed: $it") }
+        runCatching {
+            val properties = checkNotNull(car).getCarManager(Car.PROPERTY_SERVICE) as CarPropertyManager
+            propertyManager = properties
+            log("GEAR_SELECTION now: ${properties.getIntProperty(VehiclePropertyIds.GEAR_SELECTION, 0)} (P=${CarGear.GEAR_PARK}, D=${CarGear.GEAR_DRIVE})")
+            log("GEAR_SELECTION subscribed: ${properties.registerCallback(gearCallback, VehiclePropertyIds.GEAR_SELECTION, CarPropertyManager.SENSOR_RATE_ONCHANGE)}")
+        }.onFailure { log("gear property probe failed: $it") }
     }
 
     private fun probeVehicle() {

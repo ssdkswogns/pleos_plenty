@@ -9,6 +9,7 @@ import app.plenty.ui.theme.PlentyTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        (application as PlentyApplication).container.startVehicle()
         setContent {
             PlentyTheme {
                 PlentyApp()

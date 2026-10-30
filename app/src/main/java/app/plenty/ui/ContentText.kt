@@ -17,6 +17,7 @@ import app.plenty.core.content.TraitId
 import app.plenty.core.content.TraitIds
 import app.plenty.core.rules.GrowthEngine
 import app.plenty.core.rules.PlantState
+import java.util.Locale
 
 /** Display resources for content IDs (design/spec/content-v1.json). */
 object ContentRes {
@@ -109,6 +110,11 @@ fun nextStageName(plant: PlantState, points: Map<TraitId, Int> = plant.stageTrai
     return stageName(plant.species, next, content.trait(GrowthEngine(content).prefixFor(points)))
 }
 
+/** Name stored with a journey's growth snapshot (08/13), never the plant's current name. */
+@Composable
+fun grownPlantName(species: SpeciesId, stage: GrowthStage, prefix: TraitId?, content: GameContent = DefaultContent): String =
+    stageName(species, stage, content.trait(prefix))
+
 @Composable
 private fun stageName(species: SpeciesId, stage: GrowthStage, prefix: Trait?): String {
     val name = stringResource(ContentRes.speciesName(species))
@@ -126,6 +132,9 @@ fun GameContent.nextStageXp(stage: GrowthStage): Int? = when (stage) {
     GrowthStage.SPROUT -> growth.matureXp
     GrowthStage.MATURE -> null
 }
+
+/** Journey distances with one decimal, as on 03 and 08: 10 -> "10.0". */
+fun formatKm(km: Double): String = String.format(Locale.KOREA, "%.1f", km)
 
 /** Two-digit pot label used across 10/11: 1 -> "01". */
 fun potLabel(slot: Int): String = slot.toString().padStart(2, '0')

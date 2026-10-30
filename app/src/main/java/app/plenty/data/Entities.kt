@@ -1,5 +1,6 @@
 package app.plenty.data
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -48,6 +49,10 @@ data class JourneyEntity(
     val rewardMaterialCount: Int,
     val rewardSeed: String?,
     val rulesVersion: Int?,
+    /** Parked again but the end odometer was unreadable; the result screen shows "거리 확인 중". */
+    val arrivedAt: Long? = null,
+    /** When 08 was first shown, so the growth/discovery sequence plays once per journey. */
+    val resultSeenAt: Long? = null,
 )
 
 @Entity(tableName = "journey_growth", primaryKeys = ["journeyId", "plantId"])
@@ -57,7 +62,29 @@ data class JourneyGrowthEntity(
     val xpGained: Int,
     val stageBefore: String,
     val stageAfter: String,
+    /** Snapshot for 08/13 so past results never borrow the plant's current name. Null before v2. */
+    val xpBefore: Int? = null,
+    val xpAfter: Int? = null,
+    /** Name prefix of [stageAfter] (sprout or mature prefix); null = no prefix. */
+    val prefixAfter: String? = null,
+    /** Points the arrival region's trait gained before the plant was mature. */
+    @ColumnInfo(defaultValue = "0") val traitPoints: Int = 0,
 )
+
+/**
+ * Companions chosen on 05 for the next departure (single row). Not a journey yet: the journey and
+ * its start odometer are fixed only when the vehicle actually leaves park (INTERACTIONS.md §05/06).
+ */
+@Entity(tableName = "ready_selection")
+data class ReadySelectionEntity(
+    @PrimaryKey val id: Int = SINGLE_ROW,
+    val companionIds: String,
+    val readyAt: Long,
+) {
+    companion object {
+        const val SINGLE_ROW = 1
+    }
+}
 
 /** One row per granted reward. The primary key is the idempotency guard for every grant. */
 @Entity(tableName = "reward_ledger")

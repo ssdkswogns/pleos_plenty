@@ -1,6 +1,6 @@
 # PROJECT_STATUS
 
-마지막 갱신: 2026-10-28 · 전체 계획: 기획 폴더의 `plenty-dev-plan.md`
+마지막 갱신: 2026-10-30 · 전체 계획: 기획 폴더의 `plenty-dev-plan.md`
 
 ## 현재 상태
 
@@ -30,6 +30,13 @@
   - 시안과 다른 점: 전경 식물을 카트 **뒤**에 그림(scene.js는 앞). 화면 레이아웃상 전경이 배경 레이어에 있기 때문. 앱 내 "움직임 줄이기" 설정은 17 설정 화면 구현 시 게이트에 추가.
 - **T03 완료**: `GAME_RULES.md` v1. 기획 결정(10/28): 말랑은 종류가 정해진 채 수집 → 화분에 심기(재료 없음) → 동반자(최대 3)로 주행 XP → 20 XP 새싹, 100 XP 성체(자동). 각 단계 동안 쌓인 **지역 특성 점수**가 새싹·성체 이름 앞말을 정함(그림은 동일). 재료는 특성 점수 보정. 특성 종류·앞말·지역은 기획 확정 전까지 임시 3종.
 - **T04 완료**: `:core`에 `GameContent`(콘텐츠·수치), `JourneyDistance`(누적 거리 차이 → 유효/미확인/무효), `GrowthEngine`(XP·일일 상한·소수 잔여·단계 경계 점수 분배·이름 앞말·재료 보정), `RegionRewardRules`(1일 1회·첫 방문 말랑 보장·30%). 단위 테스트 23개 통과.
+- **여정 묶음 완료 (05·06·08·09·13 + T08/T09, 10/30)**: 규칙은 `GAME_RULES.md` §8.
+  - 차량 신호: `GearSource`(표준 `GEAR_SELECTION`, `CAR_POWERTRAIN`) + `OdometerSource`(Pleos Vehicle SDK, `CAR_DRIVE`) → `JourneyCoordinator`(앱 프로세스 단위, 출발 1.5초·도착 3초 debounce, 거리 확인 중 10초 재시도, 재시작 시 정산). Vehicle SDK는 이제 release에도 포함.
+  - 저장: DB v2(`ready_selection` 테이블, 여정 `arrivedAt`·`resultSeenAt`, 성장 기록에 XP 전후·이름 앞말·특성 점수 스냅샷). v1의 끝난 여정은 이전 시 "본 것"으로 표시.
+  - 화면: 05 동반자 선택(최대 3, 6개면 2줄), 06 출발 대기, 08 결과(저장값만, 개체별 XP·상한·성체 안내, 미확인/당일 재방문 문구, 확인 중·무효 상태), 09 발견, 13 성장 완료(여러 개면 순서대로·건너뛰기), 여정 탭(준비 상태 + 기록 목록 → 08). 홈 "여정 준비"는 준비가 있으면 06으로.
+  - 테스트: 저장소 여정 5개, 이전 1개, 조정기 5개(P→D→P 정산, 주행 중 시작은 출발 아님, 짧은 이탈 무시, 재시작 정산, 주행거리 실패 재시도). 전체 앱 테스트 21개 + core 27개.
+  - 에뮬레이터 확인: 60 km(강릉 대체) → 자동 08 → 13(새싹→성체) → 09 → 11 → 정원 강조, 10 km(지역 미확인·일일 상한 +0), 주행 중 앱 강제 종료 → 주차 → 재실행 정산.
+  - 데모 기록(MOCK)은 결과 화면에 "데모 기록" 표시, 자동으로 열리지 않음.
 - 내비게이션 규칙: 하위 화면(식물 상세·동반자 선택)은 소속 탭(정원)을 레일에서 선택 상태로 유지하고, 선택된 탭을 다시 누르면 그 탭의 첫 화면으로 돌아간다. Pleos 화면에는 시스템 뒤로가기 버튼이 보이지 않으므로 레일이 유일한 복귀 수단이다(화면 내 뒤로가기 버튼은 디자인 검토 대기).
 
 ## 막힌 점 / 확인 대기
@@ -43,15 +50,18 @@
 
 ## 다음 티켓
 
-1. **여정 묶음 (05·06·08·09·13 + T08/T09)**: 05는 준비 선택만 저장(ReadySelection), 06 출발 대기, 실제 차량 신호(주행 시작)에 시작 Odometer와 함께 `startJourney` 1회, 주차 복귀 시 끝 Odometer·도착 지역으로 `settleJourney`, 08 결과는 저장된 정산 표시, 09 발견, 13 자동 성장 확인 (`design/spec/INTERACTIONS.md` §05→09)
-2. **T10** 지역 판정(행정 영역 매핑, 미확인/지원 지역 밖 구분)
+1. **T10** 지역 판정: FusedLocation 도착 위치 → 행정 영역 매핑, 미확인/지원 지역 밖 구분. `ArrivalRegionSource`를 교체한다. 08의 "지원 지역 밖" 문구도 이때 추가
+2. 17 설정(움직임 줄이기 포함), 01/02 첫 시작, 세로·좁은 창 배치
+3. 앱이 주행 시작 전에 종료돼 있으면 출발을 놓친다(현재는 앱 프로세스가 살아 있어야 함). 필요하면 부팅 수신/서비스 검토
 
 ## 작업 메모
 
 - 빌드: `.\gradlew.bat :core:test :app:testDebugUnitTest :app:assembleDebug` (이 셸은 `NoDefaultCurrentDirectoryInExePath=1`이라 `.\` 필요)
 - 설치·실행: `adb install -r app\build\outputs\apk\debug\app-debug.apk` → `adb shell am start --user 10 -n app.plenty/.MainActivity`
 - 프로브: `adb shell am start --user 10 -n app.plenty/.debug.VehicleProbeActivity`, 로그 `adb logcat -s PlentyProbe`
-- 차량 상태: `bash tools/vehicle-sim.sh park|drive|speed 60|odometer 12345|soc 80|location 37.5665 126.9780|state`
+- 차량 상태: `bash tools/vehicle-sim.sh park|drive|speed 60|odometer 12345|soc 80|location 37.5665 126.9780|state` (콘솔 세션 heartbeat를 스크립트가 보냄. 주행거리는 늘리기만 가능)
+- 여정 시연: 05에서 동반자 선택 → `drive` → `odometer <현재+60>` → `park` → 3초 뒤 08 자동 표시. 도착 지역(T10 전 임시): `adb shell am broadcast --user 10 -n app.plenty/.debug.DebugCommandReceiver -a app.plenty.debug.ARRIVAL_REGION --es region gangneung` (프로세스 종료 시 해제, `--es` 없이 보내면 미확인)
+- 여정 로그: `adb logcat -s JourneyCoordinator`
 - Virtual Console 열기: `tools\open-virtual-console.cmd` 더블클릭 (에뮬레이터 재시작 시 끊기는 8088 포트 연결을 다시 만들고 브라우저를 엶)
 - 캡처: `adb exec-out screencap -p > screen.png` (cmd/bash). cold start 직후 캡처는 첫 프레임 전일 수 있음
 - 화면 텍스트 확인: Git Bash에서 `MSYS_NO_PATHCONV=1` 후 `adb shell uiautomator dump --display 0 /sdcard/ui.xml && adb shell cat /sdcard/ui.xml` (Compose 접근성 라벨이 보임). 정원 홈은 애니메이션 때문에 idle이 오지 않아 dump가 실패하므로 캡처로 확인

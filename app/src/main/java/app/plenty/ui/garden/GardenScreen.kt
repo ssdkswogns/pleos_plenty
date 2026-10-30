@@ -51,6 +51,8 @@ fun GardenScreen(
     onEmptyPotClick: (slotNumber: Int) -> Unit,
     onPrepareJourney: () -> Unit,
     modifier: Modifier = Modifier,
+    /** Companions already saved on 05 and waiting for departure; 0 = none. */
+    readyCount: Int = 0,
 ) {
     Column(modifier.fillMaxSize()) {
         BoxWithConstraints(
@@ -81,6 +83,7 @@ fun GardenScreen(
             onPotClick = onPotClick,
             onEmptyPotClick = onEmptyPotClick,
             onPrepareJourney = onPrepareJourney,
+            readyCount = readyCount,
         )
     }
 }
@@ -149,6 +152,7 @@ private fun PotsPanel(
     onPotClick: (Int) -> Unit,
     onEmptyPotClick: (slotNumber: Int) -> Unit,
     onPrepareJourney: () -> Unit,
+    readyCount: Int,
 ) {
     val colors = PlentyTheme.colors
     val type = PlentyTheme.typography
@@ -198,7 +202,11 @@ private fun PotsPanel(
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                text = stringResource(R.string.garden_prepare_journey_hint, GardenLayout.MAX_COMPANIONS),
+                text = if (readyCount > 0) {
+                    stringResource(R.string.garden_ready_hint, readyCount)
+                } else {
+                    stringResource(R.string.garden_prepare_journey_hint, GardenLayout.MAX_COMPANIONS)
+                },
                 style = type.navLabel.copy(fontWeight = FontWeight.Normal),
                 color = colors.textSecondary,
             )

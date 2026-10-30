@@ -105,8 +105,7 @@ fun rememberHomeMotion(active: Boolean): HomeMotion {
  * UNKNOWN restriction (not confirmed yet) keeps the scene still.
  */
 @Composable
-fun rememberHomeMotionAllowed(): Boolean {
-    val restriction by rememberDrivingRestriction()
+fun rememberHomeMotionAllowed(restriction: DrivingRestriction): Boolean {
     val lifecycleState by LocalLifecycleOwner.current.lifecycle.currentStateAsState()
     // Re-read on every lifecycle change so toggling "remove animations" applies on return.
     val animatorsEnabled = remember(lifecycleState) { ValueAnimator.areAnimatorsEnabled() }
@@ -115,8 +114,9 @@ fun rememberHomeMotionAllowed(): Boolean {
         animatorsEnabled
 }
 
+/** One CarUxRestrictions connection for the composition; UNKNOWN until the car service answers. */
 @Composable
-private fun rememberDrivingRestriction(): State<DrivingRestriction> {
+fun rememberDrivingRestriction(): State<DrivingRestriction> {
     val context = LocalContext.current.applicationContext
     // android.car is optional; on devices without it the class cannot load and we stay restricted.
     val source = remember { runCatching { DrivingRestrictionSource(context) }.getOrNull() }

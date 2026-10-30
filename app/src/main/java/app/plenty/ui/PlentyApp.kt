@@ -48,6 +48,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import app.plenty.R
+import app.plenty.core.GardenLayout
 import app.plenty.core.content.DefaultContent
 import app.plenty.core.content.MaterialId
 import app.plenty.core.content.SpeciesId
@@ -69,6 +70,13 @@ import app.plenty.ui.components.TopDestination
 import app.plenty.ui.garden.GardenScreen
 import app.plenty.ui.garden.GardenStatusChips
 import app.plenty.ui.garden.toGardenUiState
+import app.plenty.ui.journey.CompanionsScreen
+import app.plenty.ui.journey.GrowthCompleteScreen
+import app.plenty.ui.journey.JournalScreen
+import app.plenty.ui.journey.JourneyReadyScreen
+import app.plenty.ui.journey.JourneyResultScreen
+import app.plenty.ui.journey.SeedDiscoveryScreen
+import app.plenty.ui.motion.rememberDrivingRestriction
 import app.plenty.ui.motion.rememberHomeMotion
 import app.plenty.ui.motion.rememberHomeMotionAllowed
 import app.plenty.ui.plant.PlantConfirmScreen
@@ -76,6 +84,7 @@ import app.plenty.ui.plant.PlantDetailScreen
 import app.plenty.ui.plant.TraitTuningScreen
 import app.plenty.ui.theme.PlentySpace
 import app.plenty.ui.theme.PlentyTheme
+import app.plenty.vehicle.DrivingRestriction
 import kotlinx.coroutines.delay
 
 private const val SettingsRoute = "settings"
@@ -83,9 +92,14 @@ private const val PlantDetailRoute = "plant/{slot}"
 private const val TuneRoute = "plant/{slot}/tune"
 private const val ConfirmRoute = "plant-confirm/{species}?slot={slot}&from={from}"
 private const val SpeciesRoute = "species/{species}"
-private const val CompanionsRoute = "companions"
+private const val CompanionsRoute = "companions?with={with}"
+private const val ReadyRoute = "journey-ready"
+private const val ResultRoute = "journey/{id}?fresh={fresh}"
+private const val GrowthRoute = "journey/{id}/growth"
+private const val DiscoveryRoute = "journey/{id}/discovery"
 private const val FROM_BAG = "bag"
 private const val FROM_GARDEN = "garden"
+private const val FROM_DISCOVERY = "discovery"
 
 /** App shell: backdrop + rail + header + destination content, plus the sheet and toast layers. */
 @Composable
@@ -98,8 +112,12 @@ fun PlentyApp() {
     val viewModel: PlentyViewModel = viewModel(factory = PlentyViewModel.Factory)
     val snapshot by viewModel.garden.collectAsStateWithLifecycle()
     val busy by viewModel.busy.collectAsStateWithLifecycle()
+    val readyIds by viewModel.readyCompanions.collectAsStateWithLifecycle()
+    val unseenResult by viewModel.unseenResultId.collectAsStateWithLifecycle()
+    val journal by viewModel.journal.collectAsStateWithLifecycle()
     val gardenState = remember(snapshot) { snapshot?.toGardenUiState() }
-    val motionAllowed = rememberHomeMotionAllowed()
+    val restriction by rememberDrivingRestriction()
+    val motionAllowed = rememberHomeMotionAllowed(restriction)
     val motion = rememberHomeMotion(active = onGarden && motionAllowed)
     val content = DefaultContent
     val resources = LocalContext.current.resources
@@ -111,6 +129,22 @@ fun PlentyApp() {
     var highlightSlot by rememberSaveable { mutableStateOf<Int?>(null) }
     var sheetMaterial by rememberSaveable { mutableStateOf<String?>(null) }
     var confirmChangedKey by rememberSaveable { mutableIntStateOf(0) }
+    var lastShownResult by rememberSaveable { mutableStateOf<Long?>(null) }
+
+    // Parked again with a new result: open 08 once (INTERACTIONS.md §08). It is marked seen right
+    // away so re-entering later shows the stored result without replaying 13/09.
+    LaunchedEffect(unseenResult, restriction) {
+        val journeyId = unseenResult ?: return@LaunchedEffect
+        if (restriction != DrivingRestriction.ALLOWED || journeyId == lastShownResult) return@LaunchedEffect
+        lastShownResult = journeyId
+        viewModel.markResultSeen(journeyId)
+        sheetMaterial = null
+        // Whatever was open before driving (often 06) is stale now that the selection departed.
+        navController.popBackStack(TopDestination.Garden.route, inclusive = false)
+        navController.navigateTopLevel(TopDestination.Journey.route)
+        navController.popBackStack(TopDestination.Journey.route, inclusive = false)
+        navController.navigate("journey/$journeyId?fresh=true")
+    }
 
     LaunchedEffect(highlightSlot, onGarden, motion.running) {
         val slot = highlightSlot ?: return@LaunchedEffect
@@ -167,7 +201,10 @@ fun PlentyApp() {
                                         preferredSlot = slot
                                         navController.navigateTopLevel(TopDestination.Bag.route)
                                     },
-                                    onPrepareJourney = { navController.navigate(CompanionsRoute) },
+                                    onPrepareJourney = {
+                                        navController.navigate(if (readyIds.isNullOrEmpty()) "companions" else ReadyRoute)
+                                    },
+                                    readyCount = readyIds?.size ?: 0,
                                 )
                             }
                         }
@@ -192,7 +229,16 @@ fun PlentyApp() {
                             }
                         }
                         composable(TopDestination.Journey.route) {
-                            PlaceholderScreen(title = stringResource(R.string.nav_journey))
+                            journal?.let { entries ->
+                                JournalScreen(
+                                    entries = entries,
+                                    readyCount = readyIds?.size ?: 0,
+                                    content = content,
+                                    onOpen = { id -> navController.navigate("journey/$id") },
+                                    onPrepare = { navController.navigate("companions") },
+                                    onOpenReady = { navController.navigate(ReadyRoute) },
+                                )
+                            }
                         }
                         composable(SettingsRoute) {
                             PlaceholderScreen(title = stringResource(R.string.nav_settings))
@@ -206,7 +252,7 @@ fun PlentyApp() {
                                     content = content,
                                     onBack = { navController.popBackStack() },
                                     onTune = { navController.navigate("plant/$slot/tune") },
-                                    onCompanions = { navController.navigate(CompanionsRoute) },
+                                    onCompanions = { navController.navigate("companions?with=${plant.state.id}") },
                                 )
                             }
                         }
@@ -239,14 +285,26 @@ fun PlentyApp() {
                             ),
                         ) { entry ->
                             val species = SpeciesId(checkNotNull(entry.arguments?.getString("species")))
-                            val fromGarden = entry.arguments?.getString("from") == FROM_GARDEN
+                            val from = entry.arguments?.getString("from")
                             snapshot?.let { garden ->
                                 PlantConfirmScreen(
                                     species = species,
                                     garden = garden,
                                     preferredSlot = entry.arguments?.getInt("slot")?.takeIf { it > 0 },
-                                    backTo = stringResource(if (fromGarden) R.string.nav_garden else R.string.nav_bag),
-                                    cancelLabel = stringResource(if (fromGarden) R.string.confirm_to_garden else R.string.confirm_to_bag),
+                                    backTo = stringResource(
+                                        when (from) {
+                                            FROM_GARDEN -> R.string.nav_garden
+                                            FROM_DISCOVERY -> R.string.discovery_back
+                                            else -> R.string.nav_bag
+                                        },
+                                    ),
+                                    cancelLabel = stringResource(
+                                        when (from) {
+                                            FROM_GARDEN -> R.string.confirm_to_garden
+                                            FROM_DISCOVERY -> R.string.confirm_to_discovery
+                                            else -> R.string.confirm_to_bag
+                                        },
+                                    ),
                                     busy = busy,
                                     stateChangedKey = confirmChangedKey,
                                     onCancel = { navController.popBackStack() },
@@ -259,7 +317,12 @@ fun PlentyApp() {
                                                     // Close the confirm first so the caller's saved tab stack
                                                     // doesn't reopen it later (rail 가방 would restore it).
                                                     navController.popBackStack()
-                                                    navController.navigateTopLevel(TopDestination.Garden.route)
+                                                    // From 09 the journey screens are done too.
+                                                    if (from == FROM_DISCOVERY) {
+                                                        navController.leaveToGarden()
+                                                    } else {
+                                                        navController.showGardenHome()
+                                                    }
                                                     toast.show(
                                                         resources.getString(
                                                             R.string.planted_toast,
@@ -282,8 +345,102 @@ fun PlentyApp() {
                                 SpeciesDetailScreen(speciesEntry, content, onBack = { navController.popBackStack() })
                             }
                         }
-                        composable(CompanionsRoute) {
-                            PlaceholderScreen(title = stringResource(R.string.screen_companions))
+                        composable(
+                            CompanionsRoute,
+                            arguments = listOf(navArgument("with") { type = NavType.LongType; defaultValue = -1L }),
+                        ) { entry ->
+                            val garden = snapshot
+                            val ready = readyIds
+                            if (garden != null && ready != null) {
+                                val with = entry.arguments?.getLong("with")?.takeIf { it > 0 }
+                                CompanionsScreen(
+                                    garden = garden,
+                                    initialSelection = (ready + listOfNotNull(with)).distinct().take(GardenLayout.MAX_COMPANIONS),
+                                    busy = busy,
+                                    backTo = backLabel(navController.previousBackStackEntry),
+                                    content = content,
+                                    onBack = { navController.popBackStack() },
+                                    onConfirm = { ids ->
+                                        viewModel.prepareJourney(ids) { saved ->
+                                            if (saved) {
+                                                navController.navigate(ReadyRoute) { popUpTo(CompanionsRoute) { inclusive = true } }
+                                            } else {
+                                                toast.show(resources.getString(R.string.action_failed))
+                                            }
+                                        }
+                                    },
+                                    onOpenBag = { navController.navigateTopLevel(TopDestination.Bag.route) },
+                                )
+                            }
+                        }
+                        composable(ReadyRoute) {
+                            val garden = snapshot
+                            val ready = readyIds
+                            if (garden != null && ready != null) {
+                                JourneyReadyScreen(
+                                    companions = ready.mapNotNull { id -> garden.plants.firstOrNull { it.state.id == id } },
+                                    backTo = backLabel(navController.previousBackStackEntry),
+                                    content = content,
+                                    onBack = { navController.popBackStack() },
+                                    onChange = { navController.navigate("companions") { popUpTo(ReadyRoute) { inclusive = true } } },
+                                )
+                            }
+                        }
+                        composable(
+                            ResultRoute,
+                            arguments = listOf(
+                                navArgument("id") { type = NavType.LongType },
+                                navArgument("fresh") { type = NavType.BoolType; defaultValue = false },
+                            ),
+                        ) { entry ->
+                            val journeyId = checkNotNull(entry.arguments?.getLong("id"))
+                            val fresh = entry.arguments?.getBoolean("fresh") == true
+                            val result by remember(journeyId) { viewModel.journeyResult(journeyId) }.collectAsStateWithLifecycle(null)
+                            var growthShown by rememberSaveable { mutableStateOf(false) }
+                            // 13 plays once, the first time this result is shown after parking.
+                            LaunchedEffect(result) {
+                                val settled = result ?: return@LaunchedEffect
+                                if (fresh && !growthShown && settled.growth.any { it.grew }) {
+                                    growthShown = true
+                                    navController.navigate("journey/$journeyId/growth")
+                                }
+                            }
+                            result?.let {
+                                JourneyResultScreen(
+                                    result = it,
+                                    content = content,
+                                    onBack = { navController.popBackStack() },
+                                    onMeet = { navController.navigate("journey/$journeyId/discovery") },
+                                    onGarden = { navController.leaveToGarden() },
+                                )
+                            }
+                        }
+                        composable(GrowthRoute, arguments = listOf(navArgument("id") { type = NavType.LongType })) { entry ->
+                            val journeyId = checkNotNull(entry.arguments?.getLong("id"))
+                            val result by remember(journeyId) { viewModel.journeyResult(journeyId) }.collectAsStateWithLifecycle(null)
+                            result?.let {
+                                GrowthCompleteScreen(
+                                    grown = it.growth.filter { growth -> growth.grew },
+                                    content = content,
+                                    onDone = { navController.popBackStack() },
+                                )
+                            }
+                        }
+                        composable(DiscoveryRoute, arguments = listOf(navArgument("id") { type = NavType.LongType })) { entry ->
+                            val journeyId = checkNotNull(entry.arguments?.getLong("id"))
+                            val result by remember(journeyId) { viewModel.journeyResult(journeyId) }.collectAsStateWithLifecycle(null)
+                            val seed = result?.seed
+                            val garden = snapshot
+                            if (seed != null && garden != null) {
+                                SeedDiscoveryScreen(
+                                    species = seed,
+                                    inBag = garden.count(ItemIds.mallang(seed)),
+                                    hasEmptyPot = garden.plants.size < GardenLayout.SLOT_COUNT,
+                                    onBack = { navController.popBackStack() },
+                                    onPlant = { navController.navigate("plant-confirm/${seed.value}?slot=-1&from=$FROM_DISCOVERY") },
+                                    onLater = { navController.leaveToGarden() },
+                                )
+                            }
                         }
                     }
                 }
@@ -321,14 +478,41 @@ private fun materialOutcomeText(outcome: MaterialOutcome, resources: Resources):
 }
 
 /**
- * Rail tab of the current screen (INTERACTIONS.md 내비게이션): plant screens and companions stay
- * under 정원, species detail under 도감, and the plant confirm under whoever opened it.
+ * Rail tab of the current screen (INTERACTIONS.md 내비게이션): plant screens, 05 and 06 stay under
+ * 정원, 08/09/13 under 여정, species detail under 도감, and the plant confirm under whoever opened it.
  */
 private fun tabOf(entry: NavBackStackEntry?): TopDestination? = when (entry?.destination?.route) {
-    PlantDetailRoute, TuneRoute, CompanionsRoute -> TopDestination.Garden
+    PlantDetailRoute, TuneRoute, CompanionsRoute, ReadyRoute -> TopDestination.Garden
+    ResultRoute, GrowthRoute, DiscoveryRoute -> TopDestination.Journey
     SpeciesRoute -> TopDestination.Collection
-    ConfirmRoute -> if (entry.arguments?.getString("from") == FROM_GARDEN) TopDestination.Garden else TopDestination.Bag
+    ConfirmRoute -> when (entry.arguments?.getString("from")) {
+        FROM_GARDEN -> TopDestination.Garden
+        FROM_DISCOVERY -> TopDestination.Journey
+        else -> TopDestination.Bag
+    }
     else -> TopDestination.entries.firstOrNull { it.route == entry?.destination?.route }
+}
+
+/** "뒤로, {screen}" target for 05/06, which open from the garden, plant detail or the journey tab. */
+@Composable
+private fun backLabel(previous: NavBackStackEntry?): String = stringResource(
+    when (previous?.destination?.route) {
+        PlantDetailRoute -> R.string.screen_plant_detail
+        TopDestination.Journey.route -> R.string.nav_journey
+        else -> R.string.nav_garden
+    },
+)
+
+/** Ends the journey screens: the 여정 tab keeps only its log, then the garden home opens. */
+private fun NavHostController.leaveToGarden() {
+    popBackStack(TopDestination.Journey.route, inclusive = false)
+    showGardenHome()
+}
+
+/** The garden home itself, not whatever nested screen the 정원 tab saved last. */
+private fun NavHostController.showGardenHome() {
+    navigateTopLevel(TopDestination.Garden.route)
+    popBackStack(TopDestination.Garden.route, inclusive = false)
 }
 
 private fun NavHostController.navigateTopLevel(route: String) {

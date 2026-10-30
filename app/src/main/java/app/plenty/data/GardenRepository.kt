@@ -9,14 +9,18 @@ import app.plenty.core.content.MaterialId
 import app.plenty.core.content.RegionId
 import app.plenty.core.content.SpeciesId
 import app.plenty.core.content.SpeciesIds
+import app.plenty.core.content.TraitId
 import app.plenty.core.rules.GrowthEngine
+import app.plenty.core.rules.PlantGrowth
 import app.plenty.core.rules.SettlementInput
 import app.plenty.core.rules.SettlementPlan
 import app.plenty.core.rules.SettlementPlanner
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import java.time.Clock
 import java.time.LocalDate
+import kotlin.math.min
 import kotlin.random.Random
 
 /**
@@ -46,6 +50,20 @@ class GardenRepository(
         )
     }
 
+    /** Companions saved on 05 for the next departure; empty when nothing is ready. */
+    val readyCompanions: Flow<List<Long>> =
+        dao.observeReadySelection().map { it?.companionIds?.decodeIds().orEmpty() }
+
+    /** Newest journey whose result has not been shown (settled, rejected or checking distance). */
+    val unseenResultId: Flow<Long?> = dao.observeUnseenResultId()
+
+    val journal: Flow<List<JourneyLogEntry>> = dao.observeJournal().map { rows -> rows.map { it.toLogEntry() } }
+
+    fun journeyResult(journeyId: Long): Flow<JourneyResult?> =
+        combine(dao.observeJourney(journeyId), dao.observeGrowthWithSpecies(journeyId)) { journey, growth ->
+            journey?.toResult(growth)
+        }
+
     /** The first-launch 말랑 (04 empty garden). Granted once per install, even across restarts. */
     suspend fun ensureStarterGift() = db.withTransaction {
         if (dao.hasLedger(STARTER_KEY)) return@withTransaction
@@ -73,33 +91,45 @@ class GardenRepository(
         )
     }
 
+    /**
+     * Saves 05's choice for the next departure (INTERACTIONS.md §05/06). No journey is created and
+     * no odometer is read: that happens only when the vehicle actually leaves park ([depart]).
+     */
+    suspend fun prepareJourney(companionIds: List<Long>) = db.withTransaction {
+        requireCompanions(companionIds)
+        check(dao.plants(companionIds).count { it.slot != null } == companionIds.size) { "unknown companion" }
+        dao.upsertReadySelection(ReadySelectionEntity(companionIds = companionIds.encodeIds(), readyAt = clock.millis()))
+    }
+
     /** Fixes companions and the start odometer. Only one journey can be open at a time. */
     suspend fun startJourney(companionIds: List<Long>, startOdometerKm: Double?, source: JourneySource): Long =
         db.withTransaction {
-            require(companionIds.isNotEmpty() && companionIds.size <= GardenLayout.MAX_COMPANIONS) {
-                "1..${GardenLayout.MAX_COMPANIONS} companions required"
-            }
-            require(companionIds.distinct().size == companionIds.size) { "duplicate companions" }
+            requireCompanions(companionIds)
             check(dao.activeJourney() == null) { "a journey is already open" }
             check(dao.plants(companionIds).size == companionIds.size) { "unknown companion" }
-            dao.insertJourney(
-                JourneyEntity(
-                    status = JourneyStatus.ACTIVE,
-                    source = source.name,
-                    companionIds = companionIds.encodeIds(),
-                    startOdometerKm = startOdometerKm,
-                    endOdometerKm = null,
-                    arrivalRegion = null,
-                    startedAt = clock.millis(),
-                    settledAt = null,
-                    distanceKm = null,
-                    rewardMaterial = null,
-                    rewardMaterialCount = 0,
-                    rewardSeed = null,
-                    rulesVersion = null,
-                ),
-            )
+            insertActiveJourney(companionIds, startOdometerKm, source)
         }
+
+    /**
+     * The vehicle left park with [startOdometerKm] read at that moment. An open journey continues
+     * unchanged (its companions were fixed at its own departure); otherwise the ready selection
+     * becomes an ACTIVE journey and is cleared. Returns the open journey, or null if nothing was ready.
+     */
+    suspend fun depart(startOdometerKm: Double, source: JourneySource): Long? = db.withTransaction {
+        dao.activeJourney()?.let { open ->
+            if (open.arrivedAt != null) dao.updateJourney(open.copy(arrivedAt = null))
+            return@withTransaction open.id
+        }
+        val ready = dao.readySelection() ?: return@withTransaction null
+        dao.deleteReadySelection()
+        val chosen = ready.companionIds.decodeIds()
+        val existing = dao.plants(chosen).mapTo(HashSet()) { it.id }
+        val companions = chosen.filter { it in existing }
+        if (companions.isEmpty()) null else insertActiveJourney(companions, startOdometerKm, source)
+    }
+
+    /** Records that 08 has been shown, so the growth and discovery sequence plays only once. */
+    suspend fun markResultSeen(journeyId: Long) = dao.markResultSeen(journeyId, clock.millis())
 
     suspend fun activeJourneyId(): Long? = dao.activeJourney()?.id
 
@@ -131,7 +161,11 @@ class GardenRepository(
                 random,
             )
             when (plan) {
-                SettlementPlan.Pending -> SettlementView.Pending
+                SettlementPlan.Pending -> {
+                    // Parked but unreadable: 08 shows "거리 확인 중" for this same journey.
+                    if (journey.arrivedAt == null) dao.updateJourney(journey.copy(arrivedAt = clock.millis()))
+                    SettlementView.Pending
+                }
                 is SettlementPlan.Reject -> {
                     dao.updateJourney(
                         journey.copy(
@@ -151,11 +185,8 @@ class GardenRepository(
                     dao.upsertDailyXp(
                         plan.growth.map { DailyXpEntity(day, it.after.id, (granted[it.after.id] ?: 0) + it.xpGained) },
                     )
-                    dao.insertGrowth(
-                        plan.growth.map {
-                            JourneyGrowthEntity(journeyId, it.after.id, it.xpGained, it.before.stage.name, it.after.stage.name)
-                        },
-                    )
+                    val trait = arrivalRegion?.let(content::region)?.trait
+                    dao.insertGrowth(plan.growth.map { it.toEntity(journeyId, trait) })
                     val reward = plan.regionReward
                     if (reward != null) {
                         addItem(ItemIds.material(reward.material), reward.materialCount)
@@ -187,6 +218,49 @@ class GardenRepository(
         takeItem(ItemIds.material(material), count)
         dao.updatePlants(listOf(plant.withState(boosted)))
     }
+
+    private fun requireCompanions(companionIds: List<Long>) {
+        require(companionIds.isNotEmpty() && companionIds.size <= GardenLayout.MAX_COMPANIONS) {
+            "1..${GardenLayout.MAX_COMPANIONS} companions required"
+        }
+        require(companionIds.distinct().size == companionIds.size) { "duplicate companions" }
+    }
+
+    private suspend fun insertActiveJourney(companionIds: List<Long>, startOdometerKm: Double?, source: JourneySource) =
+        dao.insertJourney(
+            JourneyEntity(
+                status = JourneyStatus.ACTIVE,
+                source = source.name,
+                companionIds = companionIds.encodeIds(),
+                startOdometerKm = startOdometerKm,
+                endOdometerKm = null,
+                arrivalRegion = null,
+                startedAt = clock.millis(),
+                settledAt = null,
+                distanceKm = null,
+                rewardMaterial = null,
+                rewardMaterialCount = 0,
+                rewardSeed = null,
+                rulesVersion = null,
+            ),
+        )
+
+    /** Trait points only accrue below the mature threshold (GrowthEngine.gainXp). */
+    private fun PlantGrowth.toEntity(journeyId: Long, trait: TraitId?) = JourneyGrowthEntity(
+        journeyId = journeyId,
+        plantId = after.id,
+        xpGained = xpGained,
+        stageBefore = before.stage.name,
+        stageAfter = after.stage.name,
+        xpBefore = before.xp,
+        xpAfter = after.xp,
+        prefixAfter = when (after.stage) {
+            GrowthStage.SEED -> null
+            GrowthStage.SPROUT -> after.sproutPrefix?.value
+            GrowthStage.MATURE -> after.maturePrefix?.value
+        },
+        traitPoints = if (trait == null) 0 else min(xpGained, (content.growth.matureXp - before.xp).coerceAtLeast(0)),
+    )
 
     private suspend fun storedView(journey: JourneyEntity): SettlementView =
         if (journey.status == JourneyStatus.REJECTED) {

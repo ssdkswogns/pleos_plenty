@@ -1,6 +1,7 @@
 package app.plenty.data
 
 import androidx.room.Dao
+import androidx.room.Embedded
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -50,6 +51,23 @@ interface GardenDao {
     @Query("SELECT * FROM journeys WHERE status = 'ACTIVE' LIMIT 1")
     suspend fun activeJourney(): JourneyEntity?
 
+    @Query("SELECT * FROM journeys WHERE id = :id")
+    fun observeJourney(id: Long): Flow<JourneyEntity?>
+
+    /** Closed journeys plus open ones that already parked (pending distance), newest first. */
+    @Query("SELECT * FROM journeys WHERE status != 'ACTIVE' OR arrivedAt IS NOT NULL ORDER BY startedAt DESC, id DESC")
+    fun observeJournal(): Flow<List<JourneyEntity>>
+
+    /** Newest journey whose result screen has not been shown yet. */
+    @Query(
+        "SELECT id FROM journeys WHERE resultSeenAt IS NULL AND (status != 'ACTIVE' OR arrivedAt IS NOT NULL) " +
+            "ORDER BY id DESC LIMIT 1",
+    )
+    fun observeUnseenResultId(): Flow<Long?>
+
+    @Query("UPDATE journeys SET resultSeenAt = :at WHERE id = :id AND resultSeenAt IS NULL")
+    suspend fun markResultSeen(id: Long, at: Long)
+
     @Query("SELECT COALESCE(SUM(distanceKm), 0) FROM journeys WHERE status = 'SETTLED'")
     fun observeTotalDistanceKm(): Flow<Double>
 
@@ -58,6 +76,24 @@ interface GardenDao {
 
     @Query("SELECT * FROM journey_growth WHERE journeyId = :journeyId")
     suspend fun growthFor(journeyId: Long): List<JourneyGrowthEntity>
+
+    @Query(
+        "SELECT g.*, p.species FROM journey_growth g JOIN plants p ON p.id = g.plantId " +
+            "WHERE g.journeyId = :journeyId ORDER BY p.slot",
+    )
+    fun observeGrowthWithSpecies(journeyId: Long): Flow<List<GrowthWithSpecies>>
+
+    @Query("SELECT * FROM ready_selection WHERE id = 1")
+    fun observeReadySelection(): Flow<ReadySelectionEntity?>
+
+    @Query("SELECT * FROM ready_selection WHERE id = 1")
+    suspend fun readySelection(): ReadySelectionEntity?
+
+    @Upsert
+    suspend fun upsertReadySelection(selection: ReadySelectionEntity)
+
+    @Query("DELETE FROM ready_selection")
+    suspend fun deleteReadySelection()
 
     /** ABORT on a duplicate key: a second grant fails the whole transaction instead of paying twice. */
     @Insert(onConflict = OnConflictStrategy.ABORT)
@@ -81,3 +117,8 @@ interface GardenDao {
     @Insert
     suspend fun insertRegionClaim(claim: RegionClaimEntity)
 }
+
+data class GrowthWithSpecies(
+    @Embedded val growth: JourneyGrowthEntity,
+    val species: String,
+)

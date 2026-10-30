@@ -150,7 +150,95 @@
     <string name="species_best_label">정원에서 가장 많이 자란 식물</string>
     <string name="species_readonly">이곳에서는 재료 사용이나 동반자 변경을 할 수 없어요.</string>
 
+    <!-- 05 동반자 선택 -->
+    <string name="companions_title">이번 여정의 동반자를 골라요</string>
+    <string name="companions_subtitle">1~%1$d개를 선택해요. 함께 떠난 식물만 거리 경험치를 받아요.</string>
+    <string name="companions_count">선택한 동반자 %1$d / %2$d</string>
+    <string name="companions_full">최대 %1$d개까지 함께 떠날 수 있어요. 다른 식물을 고르려면 선택을 해제해 주세요.</string>
+    <string name="companions_cta">이 식물들과 함께</string>
+    <string name="companions_empty_title">아직 함께 떠날 식물이 없어요</string>
+    <string name="companions_empty_body">가방의 말랑을 화분에 심으면 동반자로 고를 수 있어요.</string>
+    <string name="companion_selected">선택됨</string>
+    <string name="companion_not_selected">선택 안 됨</string>
+
+    <!-- 06 출발 대기 -->
+    <string name="ready_title">여정 준비를 마쳤어요</string>
+    <string name="ready_subtitle">출발하면 선택한 동반자들과 함께 거리를 기록해요.</string>
+    <string name="ready_role">이번 여정의 동반자</string>
+    <string name="ready_change_note">출발 전까지 동반자를 바꿀 수 있어요.</string>
+    <string name="ready_when_title">주행이 시작되면</string>
+    <string name="ready_when_body">게임 화면은 자동으로 숨겨져요.\n주차 후 여정 결과를 확인해요.</string>
+    <string name="ready_count">선택된 동반자 %1$d개</string>
+    <string name="ready_change">동반자 바꾸기</string>
+    <string name="ready_none">준비된 동반자가 없어요.</string>
+    <string name="ready_pick">동반자 고르기</string>
+    <string name="garden_ready_hint">동반자 %1$d개가 출발을 기다려요</string>
+
+    <!-- 08 여정 결과 -->
+    <string name="result_title">함께한 만큼 자랐어요</string>
+    <string name="result_region">도착 지역 · %1$s</string>
+    <string name="result_region_unknown">도착 지역 미확인</string>
+    <string name="result_distance_label">함께한 거리</string>
+    <string name="result_km">km</string>
+    <string name="result_km_a11y">%1$s 킬로미터</string>
+    <string name="journey_started_at">%1$s 출발</string>
+    <string name="result_each_xp">동반자마다 +%1$d XP</string>
+    <string name="result_xp_change">%1$d → %2$d XP</string>
+    <string name="result_xp_gained">+%1$d XP</string>
+    <string name="result_trait_points">%1$s 특성 +%2$d점</string>
+    <string name="result_mature_kept">성체 · 이름은 그대로 유지돼요</string>
+    <string name="result_daily_cap">오늘의 거리 경험치를 모두 받았어요</string>
+    <string name="stage_change">%1$s → %2$s</string>
+    <string name="reward_mallang">%1$s 말랑 %2$d개</string>
+    <string name="reward_material">%1$s %2$d개</string>
+    <string name="result_rewards_note">보상은 이미 가방에 담겼어요.</string>
+    <string name="result_no_reward">이번 여정의 지역 보상은 없어요</string>
+    <string name="result_no_reward_unknown">도착 지역을 확인하지 못하면 지역 보상이 없어요. 거리 경험치는 그대로 받아요.</string>
+    <string name="result_no_reward_today">오늘 이 지역의 보상은 이미 받았어요. 내일 다시 방문해 보세요.</string>
+    <string name="result_meet">말랑 만나기</string>
+    <string name="result_to_garden">정원으로</string>
+    <string name="result_checking_title">거리를 확인하고 있어요</string>
+    <string name="result_checking_body">차량의 누적 주행거리를 다시 읽는 중이에요. 확인되면 이 화면에 결과가 나타나요.</string>
+    <string name="result_rejected_title">이번 여정의 거리를 확인할 수 없었어요</string>
+    <string name="result_rejected_body">성장과 보상은 없어요. 다음 여정부터 다시 기록해요.</string>
+    <string name="result_underway_title">여정이 진행 중이에요</string>
+    <string name="result_underway_body">주차하면 결과를 확인할 수 있어요.</string>
+    <string name="result_mock_note">데모 기록 · 실제 차량 데이터가 아니에요</string>
+
+    <!-- 09 말랑 발견 -->
+    <string name="discovery_title">오늘의 새로운 만남</string>
+    <string name="discovery_subtitle">여정 결과 / 발견한 말랑</string>
+    <string name="discovery_body">작은 화분에서 함께 자랄 준비가 됐어요.</string>
+    <string name="discovery_in_bag">가방에 보관 중 · %1$d개</string>
+    <string name="discovery_plant">심을 화분 고르기</string>
+    <string name="discovery_later">나중에 심기</string>
+    <string name="discovery_no_slot">빈 화분이 생기면 심을 수 있어요</string>
+    <string name="discovery_back">발견한 말랑</string>
+    <string name="confirm_to_discovery">돌아가기</string>
+
+    <!-- 13 성장 완료 -->
+    <string name="growth_title">새로운 모습으로 자랐어요</string>
+    <string name="growth_subtitle">여정에서 얻은 경험치로 자동 성장했어요.</string>
+    <string name="growth_named">이번 단계의 여정이 이름에 담겼어요.</string>
+    <string name="growth_unnamed">지역 특성 점수가 없어 기본 이름으로 자랐어요.</string>
+    <string name="growth_to_result">여정 결과로</string>
+    <string name="growth_next">다음 식물</string>
+    <string name="growth_skip">건너뛰기</string>
+    <string name="growth_position">%1$d / %2$d</string>
+    <string name="screen_result">여정 결과</string>
+
+    <!-- 여정 탭 -->
+    <string name="journal_title">여정 기록</string>
+    <string name="journal_subtitle">함께 떠난 여정과 결과를 다시 볼 수 있어요.</string>
+    <string name="journal_empty_title">아직 떠난 여정이 없어요</string>
+    <string name="journal_empty_body">정원에서 동반자를 고르고 출발해 보세요.</string>
+    <string name="journal_ready">동반자 %1$d개가 출발을 기다려요</string>
+    <string name="journal_ready_open">준비 화면</string>
+    <string name="journal_distance">%1$s km</string>
+    <string name="journal_companions">동반자 %1$d</string>
+    <string name="journal_checking">거리 확인 중</string>
+    <string name="journal_rejected">거리 확인 불가</string>
+
     <!-- Placeholders until their tickets -->
-    <string name="screen_companions">여정 동반자 선택</string>
     <string name="placeholder_body">준비 중인 화면이에요.</string>
 </resources>

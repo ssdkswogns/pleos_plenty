@@ -65,13 +65,14 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.navigation.compose)
 
+    // Odometer for journey distance (T08/T09); verified in docs/API_FACTS.md.
+    implementation(libs.pleos.vehicle)
+
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
-    // T02 probe only; moves to implementation when the real adapter lands (T08).
-    debugImplementation(libs.pleos.vehicle)
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.test.core)

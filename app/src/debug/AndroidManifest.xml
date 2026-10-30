@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Debug-only additions: the T02 vehicle probe. Release builds never contain these. -->
+<!-- Debug-only additions: the T02 vehicle probe and demo commands. Release builds never contain these. -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <!-- Odometer and Gear APIs are annotated @RequiresPermission(CAR_DRIVE) in Vehicle SDK 2.3.2. -->
-    <uses-permission android:name="pleos.car.permission.CAR_DRIVE" />
 
     <application>
         <activity
@@ -16,6 +13,7 @@
             <intent-filter>
                 <action android:name="app.plenty.debug.SEED_DEMO" />
                 <action android:name="app.plenty.debug.RESET" />
+                <action android:name="app.plenty.debug.ARRIVAL_REGION" />
             </intent-filter>
         </receiver>
     </application>
